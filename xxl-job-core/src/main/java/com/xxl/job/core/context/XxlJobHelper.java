@@ -18,267 +18,264 @@ import java.util.Date;
  */
 public class XxlJobHelper {
 
-    // ---------------------- job info ----------------------
+  // ---------------------- job info ----------------------
 
-    /**
-     * current JobId
-     *
-     * @return jobId
-     */
-    public static long getJobId() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return -1;
-        }
-
-        return xxlJobContext.getJobId();
+  /**
+   * current JobId
+   *
+   * @return jobId
+   */
+  public static long getJobId() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return -1;
     }
 
-    /**
-     * current JobParam
-     *
-     * @return jobParam
-     */
-    public static String getJobParam() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return null;
-        }
+    return xxlJobContext.getJobId();
+  }
 
-        return xxlJobContext.getJobParam();
+  /**
+   * current JobParam
+   *
+   * @return jobParam
+   */
+  public static String getJobParam() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return null;
     }
 
-    // ---------------------- log info ----------------------
+    return xxlJobContext.getJobParam();
+  }
 
-    /**
-     * current job log time
-     *
-     * @return logDateTime
-     */
-    public static long getLogId() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return -1;
-        }
+  // ---------------------- log info ----------------------
 
-        return xxlJobContext.getLogId();
+  /**
+   * current job log time
+   *
+   * @return logDateTime
+   */
+  public static long getLogId() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return -1;
     }
 
-    /**
-     * current job log time
-     *
-     * @return logDateTime
-     */
-    public static long getLogDateTime() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return -1;
-        }
+    return xxlJobContext.getLogId();
+  }
 
-        return xxlJobContext.getLogDateTime();
+  /**
+   * current job log time
+   *
+   * @return logDateTime
+   */
+  public static long getLogDateTime() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return -1;
     }
 
-    /**
-     * current job log filename
-     *
-     * @return logFileName
-     */
-    public static String getLogFileName() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return null;
-        }
+    return xxlJobContext.getLogDateTime();
+  }
 
-        return xxlJobContext.getLogFileName();
+  /**
+   * current job log filename
+   *
+   * @return logFileName
+   */
+  public static String getLogFileName() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return null;
     }
 
-    // ---------------------- shard info ----------------------
+    return xxlJobContext.getLogFileName();
+  }
 
-    /**
-     * current ShardIndex
-     *
-     * @return shardIndex
-     */
-    public static int getShardIndex() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return -1;
-        }
+  // ---------------------- shard info ----------------------
 
-        return xxlJobContext.getShardIndex();
+  /**
+   * current ShardIndex
+   *
+   * @return shardIndex
+   */
+  public static int getShardIndex() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return -1;
     }
 
-    /**
-     * current ShardTotal
-     *
-     * @return shardTotal
-     */
-    public static int getShardTotal() {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return -1;
-        }
+    return xxlJobContext.getShardIndex();
+  }
 
-        return xxlJobContext.getShardTotal();
+  /**
+   * current ShardTotal
+   *
+   * @return shardTotal
+   */
+  public static int getShardTotal() {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return -1;
     }
 
-    // ---------------------- tool for log ----------------------
+    return xxlJobContext.getShardTotal();
+  }
 
-    private static final Logger logger = LoggerFactory.getLogger("xxl-job logger");
+  // ---------------------- tool for log ----------------------
 
-    /**
-     * append log with pattern
-     *
-     * @param appendLogPattern  like "aaa {} bbb {} ccc"
-     * @param appendLogArguments    like "111, true"
-     */
-    public static boolean log(String appendLogPattern, Object ... appendLogArguments) {
+  private static final Logger logger = LoggerFactory.getLogger("xxl-job logger");
 
-        FormattingTuple ft = MessageFormatter.arrayFormat(appendLogPattern, appendLogArguments);
-        String appendLog = ft.getMessage();
+  /**
+   * append log with pattern
+   *
+   * @param appendLogPattern   like "aaa {} bbb {} ccc"
+   * @param appendLogArguments like "111, true"
+   */
+  public static boolean log(String appendLogPattern, Object... appendLogArguments) {
+
+    FormattingTuple ft = MessageFormatter.arrayFormat(appendLogPattern, appendLogArguments);
+    String appendLog = ft.getMessage();
 
         /*appendLog = appendLogPattern;
         if (appendLogArguments!=null && appendLogArguments.length>0) {
             appendLog = MessageFormat.format(appendLogPattern, appendLogArguments);
         }*/
 
-        StackTraceElement callInfo = new Throwable().getStackTrace()[1];
-        return logDetail(callInfo, appendLog);
+    StackTraceElement callInfo = new Throwable().getStackTrace()[1];
+    return logDetail(callInfo, appendLog);
+  }
+
+  /**
+   * append exception stack
+   *
+   * @param e exception to log
+   *          return true if log success
+   */
+  public static boolean log(Throwable e) {
+
+    StringWriter stringWriter = new StringWriter();
+    e.printStackTrace(new PrintWriter(stringWriter));
+    String appendLog = stringWriter.toString();
+
+    StackTraceElement callInfo = new Throwable().getStackTrace()[1];
+    return logDetail(callInfo, appendLog);
+  }
+
+  /**
+   * append log
+   *
+   * @param callInfo  call info
+   * @param appendLog append log
+   */
+  private static boolean logDetail(StackTraceElement callInfo, String appendLog) {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return false;
     }
-
-    /**
-     * append exception stack
-     *
-     * @param e exception to log
-     * return true if log success
-     */
-    public static boolean log(Throwable e) {
-
-        StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter));
-        String appendLog = stringWriter.toString();
-
-        StackTraceElement callInfo = new Throwable().getStackTrace()[1];
-        return logDetail(callInfo, appendLog);
-    }
-
-    /**
-     * append log
-     *
-     * @param callInfo      call info
-     * @param appendLog     append log
-     */
-    private static boolean logDetail(StackTraceElement callInfo, String appendLog) {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return false;
-        }
 
         /*// "yyyy-MM-dd HH:mm:ss [ClassName]-[MethodName]-[LineNumber]-[ThreadName] log";
         StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
         StackTraceElement callInfo = stackTraceElements[1];*/
 
-        String formatAppendLog = DateTool.formatDateTime(new Date()) + " " +
-                "[" + callInfo.getClassName() + "#" + callInfo.getMethodName() + "]" + "-" +
-                "[" + callInfo.getLineNumber() + "]" + "-" +
-                "[" + Thread.currentThread().getName() + "]" + " " +
-                (appendLog != null ? appendLog : "");
+    String formatAppendLog = DateTool.formatDateTime(new Date()) + " " +
+        "[" + callInfo.getClassName() + "#" + callInfo.getMethodName() + "]" + "-" +
+        "[" + callInfo.getLineNumber() + "]" + "-" +
+        "[" + Thread.currentThread().getName() + "]" + " " +
+        (appendLog != null ? appendLog : "");
 
-        // appendlog
-        String logFileName = xxlJobContext.getLogFileName();
+    // appendlog
+    String logFileName = xxlJobContext.getLogFileName();
 
-        if (logFileName!=null && !logFileName.trim().isEmpty()) {
-            XxlJobFileAppender.appendLog(logFileName, formatAppendLog);
-            return true;
-        } else {
-            logger.info(">>>>>>>>>>> {}", formatAppendLog);
-            return false;
-        }
+    if (logFileName != null && !logFileName.trim().isEmpty()) {
+      XxlJobFileAppender.appendLog(logFileName, formatAppendLog);
+      return true;
+    } else {
+      logger.info(">>>>>>>>>>> {}", formatAppendLog);
+      return false;
+    }
+  }
+
+  // ---------------------- tool for handleResult ----------------------
+
+  /**
+   * handle success
+   *
+   * @return true if handle success
+   */
+  public static boolean handleSuccess() {
+    return handleResult(XxlJobContext.HANDLE_CODE_SUCCESS, null);
+  }
+
+  /**
+   * handle success with log msg
+   *
+   * @param handleMsg log msg
+   * @return true if handle success
+   */
+  public static boolean handleSuccess(String handleMsg) {
+    return handleResult(XxlJobContext.HANDLE_CODE_SUCCESS, handleMsg);
+  }
+
+  /**
+   * handle fail
+   *
+   * @return true if handle fail
+   */
+  public static boolean handleFail() {
+    return handleResult(XxlJobContext.HANDLE_CODE_FAIL, null);
+  }
+
+  /**
+   * handle fail with log msg
+   *
+   * @param handleMsg log msg
+   * @return true if handle fail
+   */
+  public static boolean handleFail(String handleMsg) {
+    return handleResult(XxlJobContext.HANDLE_CODE_FAIL, handleMsg);
+  }
+
+  /**
+   * handle timeout
+   *
+   * @return true if handle timeout
+   */
+  public static boolean handleTimeout() {
+    return handleResult(XxlJobContext.HANDLE_CODE_TIMEOUT, null);
+  }
+
+  /**
+   * handle timeout with log msg
+   *
+   * @param handleMsg log msg
+   * @return true if handle timeout
+   */
+  public static boolean handleTimeout(String handleMsg) {
+    return handleResult(XxlJobContext.HANDLE_CODE_TIMEOUT, handleMsg);
+  }
+
+  /**
+   * handle result
+   *
+   * @param handleCode 200 : success
+   *                   500 : fail
+   *                   502 : timeout
+   * @param handleMsg  log msg
+   * @return true if handle success
+   */
+  public static boolean handleResult(int handleCode, String handleMsg) {
+    XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
+    if (xxlJobContext == null) {
+      return false;
     }
 
-    // ---------------------- tool for handleResult ----------------------
-
-    /**
-     * handle success
-     *
-     * @return true if handle success
-     */
-    public static boolean handleSuccess(){
-        return handleResult(XxlJobContext.HANDLE_CODE_SUCCESS, null);
+    xxlJobContext.setHandleCode(handleCode);
+    if (handleMsg != null) {
+      xxlJobContext.setHandleMsg(handleMsg);
     }
-
-    /**
-     * handle success with log msg
-     *
-     * @param handleMsg log msg
-     * @return true if handle success
-     */
-    public static boolean handleSuccess(String handleMsg) {
-        return handleResult(XxlJobContext.HANDLE_CODE_SUCCESS, handleMsg);
-    }
-
-    /**
-     * handle fail
-     *
-     * @return true if handle fail
-     */
-    public static boolean handleFail(){
-        return handleResult(XxlJobContext.HANDLE_CODE_FAIL, null);
-    }
-
-    /**
-     * handle fail with log msg
-     *
-     * @param handleMsg log msg
-     * @return true if handle fail
-     */
-    public static boolean handleFail(String handleMsg) {
-        return handleResult(XxlJobContext.HANDLE_CODE_FAIL, handleMsg);
-    }
-
-    /**
-     * handle timeout
-     *
-     * @return true if handle timeout
-     */
-    public static boolean handleTimeout(){
-        return handleResult(XxlJobContext.HANDLE_CODE_TIMEOUT, null);
-    }
-
-    /**
-     * handle timeout with log msg
-     *
-     * @param handleMsg log msg
-     * @return true if handle timeout
-     */
-    public static boolean handleTimeout(String handleMsg){
-        return handleResult(XxlJobContext.HANDLE_CODE_TIMEOUT, handleMsg);
-    }
-
-    /**
-     * handle result
-     *
-     * @param handleCode
-     *
-     *      200 : success
-     *      500 : fail
-     *      502 : timeout
-     *
-     * @param handleMsg log msg
-     * @return true if handle success
-     */
-    public static boolean handleResult(int handleCode, String handleMsg) {
-        XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
-        if (xxlJobContext == null) {
-            return false;
-        }
-
-        xxlJobContext.setHandleCode(handleCode);
-        if (handleMsg != null) {
-            xxlJobContext.setHandleMsg(handleMsg);
-        }
-        return true;
-    }
+    return true;
+  }
 
 
 }

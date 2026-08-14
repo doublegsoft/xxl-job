@@ -6,54 +6,56 @@ package com.xxl.job.core.constant;
 public enum ExecutorBlockStrategyEnum {
 
 
-    /**
-     * serial execution
-     */
-    SERIAL_EXECUTION("Serial execution"),
+  /**
+   * serial execution
+   */
+  SERIAL_EXECUTION("Serial execution"),
 
-    /**
-     * concurrent execution
-     */
-    /*CONCURRENT_EXECUTION("并行"),*/
+  /**
+   * concurrent execution
+   */
+  /*CONCURRENT_EXECUTION("并行"),*/
 
-    /**
-     * discard later
-     */
-    DISCARD_LATER("Discard Later"),
+  /**
+   * discard later
+   */
+  DISCARD_LATER("Discard Later"),
 
-    /**
-     * cover early
-     */
-    COVER_EARLY("Cover Early");
+  /**
+   * cover early
+   */
+  COVER_EARLY("Cover Early");
 
 
-    private String title;
-    ExecutorBlockStrategyEnum (String title) {
-        this.title = title;
-    }
+  private String title;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getTitle() {
-        return title;
-    }
+  ExecutorBlockStrategyEnum(String title) {
+    this.title = title;
+  }
 
-    /**
-     * match by name
-     *
-     * @param name              enum name
-     * @param defaultItem       default item
-     * @return                  match item
-     */
-    public static ExecutorBlockStrategyEnum match(String name, ExecutorBlockStrategyEnum defaultItem) {
-        if (name != null) {
-            for (ExecutorBlockStrategyEnum item:ExecutorBlockStrategyEnum.values()) {
-                if (item.name().equals(name)) {
-                    return item;
-                }
-            }
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * match by name
+   *
+   * @param name        enum name
+   * @param defaultItem default item
+   * @return match item
+   */
+  public static ExecutorBlockStrategyEnum match(String name, ExecutorBlockStrategyEnum defaultItem) {
+    if (name != null) {
+      for (ExecutorBlockStrategyEnum item : ExecutorBlockStrategyEnum.values()) {
+        if (item.name().equals(name)) {
+          return item;
         }
-        return defaultItem;
+      }
     }
+    return defaultItem;
+  }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * Simple LoginStore
- *
+ * <p>
  * 1、store by database；
  * 2、If you have higher performance requirements, it is recommended to use RedisLoginStore；
  *
@@ -25,60 +25,60 @@ import java.util.Map;
 public class SimpleLoginStore implements LoginStore {
 
 
-    @Resource
-    private XxlJobUserMapper xxlJobUserMapper;
+  @Resource
+  private XxlJobUserMapper xxlJobUserMapper;
 
 
-    @Override
-    public Response<String> set(LoginInfo loginInfo) {
+  @Override
+  public Response<String> set(LoginInfo loginInfo) {
 
-        // parse token-signature
-        String token_sign = loginInfo.getSignature();
+    // parse token-signature
+    String token_sign = loginInfo.getSignature();
 
-        // write token by UserId
-        int ret = xxlJobUserMapper.updateToken(Integer.parseInt(loginInfo.getUserId()), token_sign);
-        return ret > 0 ? Response.ofSuccess() : Response.ofFail("token set fail");
+    // write token by UserId
+    int ret = xxlJobUserMapper.updateToken(Integer.parseInt(loginInfo.getUserId()), token_sign);
+    return ret > 0 ? Response.ofSuccess() : Response.ofFail("token set fail");
+  }
+
+  @Override
+  public Response<String> update(LoginInfo loginInfo) {
+    return Response.ofFail("not support");
+  }
+
+  @Override
+  public Response<String> remove(String userId) {
+    // delete token-signature
+    int ret = xxlJobUserMapper.updateToken(Integer.parseInt(userId), "");
+    return ret > 0 ? Response.ofSuccess() : Response.ofFail("token remove fail");
+  }
+
+  /**
+   * check through DB query
+   */
+  @Override
+  public Response<LoginInfo> get(String userId) {
+
+    // load login-user
+    XxlJobUser user = xxlJobUserMapper.loadById(Integer.parseInt(userId));
+    if (user == null) {
+      return Response.ofFail("userId invalid.");
     }
 
-    @Override
-    public Response<String> update(LoginInfo loginInfo) {
-        return Response.ofFail("not support");
-    }
+    // parse role
+    List<String> roleList = user.getRole() == 1 ? List.of(Consts.ADMIN_ROLE) : null;
 
-    @Override
-    public Response<String> remove(String userId) {
-        // delete token-signature
-        int ret = xxlJobUserMapper.updateToken(Integer.parseInt(userId), "");
-        return ret > 0 ? Response.ofSuccess() : Response.ofFail("token remove fail");
-    }
+    // parse jobGroup permission
+    Map<String, String> extraInfo = MapTool.newMap(
+        "jobGroups", user.getPermission()
+    );
 
-    /**
-     * check through DB query
-     */
-    @Override
-    public Response<LoginInfo> get(String userId) {
+    // build LoginInfo
+    LoginInfo loginInfo = new LoginInfo(userId, user.getToken());
+    loginInfo.setUserName(user.getUsername());
+    loginInfo.setRoleList(roleList);
+    loginInfo.setExtraInfo(extraInfo);
 
-        // load login-user
-        XxlJobUser user = xxlJobUserMapper.loadById(Integer.parseInt(userId));
-        if (user == null) {
-            return Response.ofFail("userId invalid.");
-        }
-
-        // parse role
-        List<String> roleList = user.getRole()==1? List.of(Consts.ADMIN_ROLE):null;
-
-        // parse jobGroup permission
-        Map<String, String> extraInfo = MapTool.newMap(
-                "jobGroups", user.getPermission()
-        );
-
-        // build LoginInfo
-        LoginInfo loginInfo = new LoginInfo(userId, user.getToken());
-        loginInfo.setUserName(user.getUsername());
-        loginInfo.setRoleList(roleList);
-        loginInfo.setExtraInfo(extraInfo);
-
-        return Response.ofSuccess(loginInfo);
-    }
+    return Response.ofSuccess(loginInfo);
+  }
 
 }

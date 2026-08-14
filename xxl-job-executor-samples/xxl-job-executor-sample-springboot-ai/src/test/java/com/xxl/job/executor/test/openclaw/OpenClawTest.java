@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 public class OpenClawTest {
-    private static final Logger logger = LoggerFactory.getLogger(OpenClawTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(OpenClawTest.class);
 
-    @Resource
-    private OpenAiChatModel openAiChatModel;
+  @Resource
+  private OpenAiChatModel openAiChatModel;
 
     /*ChatModel chatModel = OpenAiChatModel
                 .builder()
@@ -39,58 +39,58 @@ public class OpenClawTest {
                         .build())
                 .build();*/
 
-    @Test
-    public void test() throws Exception {
+  @Test
+  public void test() throws Exception {
 
-        String prompt = "你是一个出游助手，擅长做旅游规划";
-        String input = "查看下上海今天得天气，给出出游建议";
+    String prompt = "你是一个出游助手，擅长做旅游规划";
+    String input = "查看下上海今天得天气，给出出游建议";
 
-        // ChatClient
-        ChatClient chatClient = ChatClient
-                .builder(openAiChatModel)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
-                .build();
+    // ChatClient
+    ChatClient chatClient = ChatClient
+        .builder(openAiChatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
+        .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
+        .build();
 
-        // Call LLM: 同步输出
-        String response = chatClient
-                .prompt(prompt)
-                .user(input)
-                .call()
-                .content();
+    // Call LLM: 同步输出
+    String response = chatClient
+        .prompt(prompt)
+        .user(input)
+        .call()
+        .content();
 
-        logger.info("Input: {}", input);
-        logger.info("Output: {}", response);
-    }
+    logger.info("Input: {}", input);
+    logger.info("Output: {}", response);
+  }
 
-    @Test
-    public void test2() throws Exception {
+  @Test
+  public void test2() throws Exception {
 
-        String prompt = "你是一个出游助手，擅长做旅游规划";
-        String input = "查看下上海今天得天气，给出出游建议";
+    String prompt = "你是一个出游助手，擅长做旅游规划";
+    String input = "查看下上海今天得天气，给出出游建议";
 
-        // ChatClient
-        ChatClient chatClient = ChatClient
-                .builder(openAiChatModel)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
-                .build();
+    // ChatClient
+    ChatClient chatClient = ChatClient
+        .builder(openAiChatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
+        .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
+        .build();
 
-        // Call LLM: 流式输出
-        Flux<String> flux = chatClient
-                .prompt(prompt)
-                .user(input)
-                .user(user -> user.text(input).params(Map.of("stream", true)))
-                .stream()
-                .content();
+    // Call LLM: 流式输出
+    Flux<String> flux = chatClient
+        .prompt(prompt)
+        .user(input)
+        .user(user -> user.text(input).params(Map.of("stream", true)))
+        .stream()
+        .content();
 
-        flux.subscribe(
-                data -> System.out.println("Received: " + data),        // onNext 处理
-                error -> System.err.println("Error: " + error),     // onError 处理
-                () -> System.out.println("Completed")                         // onComplete 处理
-        );
+    flux.subscribe(
+        data -> System.out.println("Received: " + data),        // onNext 处理
+        error -> System.err.println("Error: " + error),     // onError 处理
+        () -> System.out.println("Completed")                         // onComplete 处理
+    );
 
-        TimeUnit.SECONDS.sleep(30);
-    }
+    TimeUnit.SECONDS.sleep(30);
+  }
 
 }

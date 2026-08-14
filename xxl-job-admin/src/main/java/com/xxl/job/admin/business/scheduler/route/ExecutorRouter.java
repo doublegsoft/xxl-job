@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
  * Created by xuxueli on 17/3/10.
  */
 public abstract class ExecutorRouter {
-    protected static Logger logger = LoggerFactory.getLogger(ExecutorRouter.class);
+  protected static Logger logger = LoggerFactory.getLogger(ExecutorRouter.class);
 
-    /**
-     * route address
-     *
-     * @param triggerRequest trigger request
-     * @param jobGroup  executor group
-     * @return  ReturnT.content=address
-     */
-    public abstract Response<String> route(TriggerRequest triggerRequest, XxlJobGroup jobGroup);
+  /**
+   * route address
+   *
+   * @param triggerRequest trigger request
+   * @param jobGroup       executor group
+   * @return ReturnT.content=address
+   */
+  public abstract Response<String> route(TriggerRequest triggerRequest, XxlJobGroup jobGroup);
 
 }

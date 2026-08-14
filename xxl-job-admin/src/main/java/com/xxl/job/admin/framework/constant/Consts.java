@@ -7,9 +7,9 @@ package com.xxl.job.admin.framework.constant;
  */
 public class Consts {
 
-    /**
-     * Admin Role
-     */
-    public static final String ADMIN_ROLE = "ADMIN";
+  /**
+   * Admin Role
+   */
+  public static final String ADMIN_ROLE = "ADMIN";
 
 }

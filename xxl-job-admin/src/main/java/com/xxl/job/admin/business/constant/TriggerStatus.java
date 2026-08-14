@@ -7,38 +7,38 @@ package com.xxl.job.admin.business.constant;
  */
 public enum TriggerStatus {
 
-    /**
-     * Stopped
-     */
-    STOPPED(0, "stopped"),
+  /**
+   * Stopped
+   */
+  STOPPED(0, "stopped"),
 
-    /**
-     * Running
-     */
-    RUNNING(1, "running");
+  /**
+   * Running
+   */
+  RUNNING(1, "running");
 
-    private int value;
-    private String desc;
+  private int value;
+  private String desc;
 
-    TriggerStatus(int value, String desc) {
-        this.value = value;
-        this.desc = desc;
-    }
+  TriggerStatus(int value, String desc) {
+    this.value = value;
+    this.desc = desc;
+  }
 
-    public int getValue() {
-        return value;
-    }
+  public int getValue() {
+    return value;
+  }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
+  public void setValue(int value) {
+    this.value = value;
+  }
 
-    public String getDesc() {
-        return desc;
-    }
+  public String getDesc() {
+    return desc;
+  }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
+  public void setDesc(String desc) {
+    this.desc = desc;
+  }
 
 }

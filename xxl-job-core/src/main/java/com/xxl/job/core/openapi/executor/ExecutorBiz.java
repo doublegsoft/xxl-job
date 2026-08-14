@@ -8,43 +8,43 @@ import com.xxl.tool.response.Response;
  */
 public interface ExecutorBiz {
 
-    /**
-     * beat
-     *
-     * @return response
-     */
-    public Response<String> beat();
+  /**
+   * beat
+   *
+   * @return response
+   */
+  public Response<String> beat();
 
-    /**
-     * idle beat
-     *
-     * @param idleBeatRequest idleBeatRequest
-     * @return response
-     */
-    public Response<String> idleBeat(IdleBeatRequest idleBeatRequest);
+  /**
+   * idle beat
+   *
+   * @param idleBeatRequest idleBeatRequest
+   * @return response
+   */
+  public Response<String> idleBeat(IdleBeatRequest idleBeatRequest);
 
-    /**
-     * run
-     *
-     * @param triggerRequest triggerRequest
-     * @return response
-     */
-    public Response<String> trigger(TriggerRequest triggerRequest);
+  /**
+   * run
+   *
+   * @param triggerRequest triggerRequest
+   * @return response
+   */
+  public Response<String> trigger(TriggerRequest triggerRequest);
 
-    /**
-     * kill
-     *
-     * @param killRequest killRequest
-     * @return response
-     */
-    public Response<String> kill(KillRequest killRequest);
+  /**
+   * kill
+   *
+   * @param killRequest killRequest
+   * @return response
+   */
+  public Response<String> kill(KillRequest killRequest);
 
-    /**
-     * log
-     *
-     * @param logRequest logRequest
-     * @return response
-     */
-    public Response<LogData> log(LogRequest logRequest);
+  /**
+   * log
+   *
+   * @param logRequest logRequest
+   * @return response
+   */
+  public Response<LogData> log(LogRequest logRequest);
 
 }

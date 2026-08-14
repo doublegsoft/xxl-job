@@ -6,158 +6,158 @@ import java.io.Serializable;
  * request DTO for updating an existing job
  */
 public class JobUpdateRequest implements Serializable {
-    private static final long serialVersionUID = 42L;
+  private static final long serialVersionUID = 42L;
 
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 
-    private String author;
-    private String alarmEmail;
+  private String author;
+  private String alarmEmail;
 
-    private String scheduleType;
-    private String scheduleConf;
-    private String misfireStrategy;
+  private String scheduleType;
+  private String scheduleConf;
+  private String misfireStrategy;
 
-    private String executorRouteStrategy;
-    private String executorHandler;
-    private String executorParam;
-    private String executorBlockStrategy;
-    private int executorTimeout;
-    private int executorFailRetryCount;
+  private String executorRouteStrategy;
+  private String executorHandler;
+  private String executorParam;
+  private String executorBlockStrategy;
+  private int executorTimeout;
+  private int executorFailRetryCount;
 
-    private String glueType;
-    private String glueSource;
-    private String glueRemark;
+  private String glueType;
+  private String glueSource;
+  private String glueRemark;
 
-    public JobUpdateRequest() {
-    }
+  public JobUpdateRequest() {
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getAuthor() {
-        return author;
-    }
+  public String getAuthor() {
+    return author;
+  }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-    public String getAlarmEmail() {
-        return alarmEmail;
-    }
+  public String getAlarmEmail() {
+    return alarmEmail;
+  }
 
-    public void setAlarmEmail(String alarmEmail) {
-        this.alarmEmail = alarmEmail;
-    }
+  public void setAlarmEmail(String alarmEmail) {
+    this.alarmEmail = alarmEmail;
+  }
 
-    public String getScheduleType() {
-        return scheduleType;
-    }
+  public String getScheduleType() {
+    return scheduleType;
+  }
 
-    public void setScheduleType(String scheduleType) {
-        this.scheduleType = scheduleType;
-    }
+  public void setScheduleType(String scheduleType) {
+    this.scheduleType = scheduleType;
+  }
 
-    public String getScheduleConf() {
-        return scheduleConf;
-    }
+  public String getScheduleConf() {
+    return scheduleConf;
+  }
 
-    public void setScheduleConf(String scheduleConf) {
-        this.scheduleConf = scheduleConf;
-    }
+  public void setScheduleConf(String scheduleConf) {
+    this.scheduleConf = scheduleConf;
+  }
 
-    public String getMisfireStrategy() {
-        return misfireStrategy;
-    }
+  public String getMisfireStrategy() {
+    return misfireStrategy;
+  }
 
-    public void setMisfireStrategy(String misfireStrategy) {
-        this.misfireStrategy = misfireStrategy;
-    }
+  public void setMisfireStrategy(String misfireStrategy) {
+    this.misfireStrategy = misfireStrategy;
+  }
 
-    public String getExecutorRouteStrategy() {
-        return executorRouteStrategy;
-    }
+  public String getExecutorRouteStrategy() {
+    return executorRouteStrategy;
+  }
 
-    public void setExecutorRouteStrategy(String executorRouteStrategy) {
-        this.executorRouteStrategy = executorRouteStrategy;
-    }
+  public void setExecutorRouteStrategy(String executorRouteStrategy) {
+    this.executorRouteStrategy = executorRouteStrategy;
+  }
 
-    public String getExecutorHandler() {
-        return executorHandler;
-    }
+  public String getExecutorHandler() {
+    return executorHandler;
+  }
 
-    public void setExecutorHandler(String executorHandler) {
-        this.executorHandler = executorHandler;
-    }
+  public void setExecutorHandler(String executorHandler) {
+    this.executorHandler = executorHandler;
+  }
 
-    public String getExecutorParam() {
-        return executorParam;
-    }
+  public String getExecutorParam() {
+    return executorParam;
+  }
 
-    public void setExecutorParam(String executorParam) {
-        this.executorParam = executorParam;
-    }
+  public void setExecutorParam(String executorParam) {
+    this.executorParam = executorParam;
+  }
 
-    public String getExecutorBlockStrategy() {
-        return executorBlockStrategy;
-    }
+  public String getExecutorBlockStrategy() {
+    return executorBlockStrategy;
+  }
 
-    public void setExecutorBlockStrategy(String executorBlockStrategy) {
-        this.executorBlockStrategy = executorBlockStrategy;
-    }
+  public void setExecutorBlockStrategy(String executorBlockStrategy) {
+    this.executorBlockStrategy = executorBlockStrategy;
+  }
 
-    public int getExecutorTimeout() {
-        return executorTimeout;
-    }
+  public int getExecutorTimeout() {
+    return executorTimeout;
+  }
 
-    public void setExecutorTimeout(int executorTimeout) {
-        this.executorTimeout = executorTimeout;
-    }
+  public void setExecutorTimeout(int executorTimeout) {
+    this.executorTimeout = executorTimeout;
+  }
 
-    public int getExecutorFailRetryCount() {
-        return executorFailRetryCount;
-    }
+  public int getExecutorFailRetryCount() {
+    return executorFailRetryCount;
+  }
 
-    public void setExecutorFailRetryCount(int executorFailRetryCount) {
-        this.executorFailRetryCount = executorFailRetryCount;
-    }
+  public void setExecutorFailRetryCount(int executorFailRetryCount) {
+    this.executorFailRetryCount = executorFailRetryCount;
+  }
 
-    public String getGlueType() {
-        return glueType;
-    }
+  public String getGlueType() {
+    return glueType;
+  }
 
-    public void setGlueType(String glueType) {
-        this.glueType = glueType;
-    }
+  public void setGlueType(String glueType) {
+    this.glueType = glueType;
+  }
 
-    public String getGlueSource() {
-        return glueSource;
-    }
+  public String getGlueSource() {
+    return glueSource;
+  }
 
-    public void setGlueSource(String glueSource) {
-        this.glueSource = glueSource;
-    }
+  public void setGlueSource(String glueSource) {
+    this.glueSource = glueSource;
+  }
 
-    public String getGlueRemark() {
-        return glueRemark;
-    }
+  public String getGlueRemark() {
+    return glueRemark;
+  }
 
-    public void setGlueRemark(String glueRemark) {
-        this.glueRemark = glueRemark;
-    }
+  public void setGlueRemark(String glueRemark) {
+    this.glueRemark = glueRemark;
+  }
 
 }

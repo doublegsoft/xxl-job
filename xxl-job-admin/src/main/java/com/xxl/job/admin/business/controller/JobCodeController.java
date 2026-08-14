@@ -33,90 +33,90 @@ import java.util.List;
 @Controller
 @RequestMapping("/jobcode")
 public class JobCodeController {
-	private static final Logger logger = LoggerFactory.getLogger(JobCodeController.class);
-	
-	@Resource
-	private XxlJobInfoMapper xxlJobInfoMapper;
-	@Resource
-	private XxlJobLogGlueMapper xxlJobLogGlueMapper;
+  private static final Logger logger = LoggerFactory.getLogger(JobCodeController.class);
 
-	@RequestMapping
-	public String index(HttpServletRequest request, Model model, @RequestParam("jobId") int jobId) {
-		XxlJobInfo jobInfo = xxlJobInfoMapper.loadById(jobId);
-		List<XxlJobLogGlue> jobLogGlues = xxlJobLogGlueMapper.findByJobId(jobId);
+  @Resource
+  private XxlJobInfoMapper xxlJobInfoMapper;
+  @Resource
+  private XxlJobLogGlueMapper xxlJobLogGlueMapper;
 
-		if (jobInfo == null) {
-			throw new RuntimeException(I18nUtil.getString("jobinfo_glue_jobid_invalid"));
-		}
-		if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobInfo.getGlueType())) {
-			throw new RuntimeException(I18nUtil.getString("jobinfo_glue_gluetype_invalid"));
-		}
+  @RequestMapping
+  public String index(HttpServletRequest request, Model model, @RequestParam("jobId") int jobId) {
+    XxlJobInfo jobInfo = xxlJobInfoMapper.loadById(jobId);
+    List<XxlJobLogGlue> jobLogGlues = xxlJobLogGlueMapper.findByJobId(jobId);
 
-		// valid jobGroup permission
-		JobGroupPermissionUtil.validJobGroupPermission(request, jobInfo.getJobGroup());
+    if (jobInfo == null) {
+      throw new RuntimeException(I18nUtil.getString("jobinfo_glue_jobid_invalid"));
+    }
+    if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobInfo.getGlueType())) {
+      throw new RuntimeException(I18nUtil.getString("jobinfo_glue_gluetype_invalid"));
+    }
 
-		// Glue类型-字典
-		model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());
+    // valid jobGroup permission
+    JobGroupPermissionUtil.validJobGroupPermission(request, jobInfo.getJobGroup());
 
-		model.addAttribute("jobInfo", jobInfo);
-		model.addAttribute("jobLogGlues", jobLogGlues);
-		return "business/job.code";
-	}
-	
-	@RequestMapping("/save")
-	@ResponseBody
-	public Response<String> save(HttpServletRequest request,
-								 @RequestParam("id") int id,
-								 @RequestParam("glueSource") String glueSource,
-								 @RequestParam("glueRemark") String glueRemark) {
+    // Glue类型-字典
+    model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());
 
-		// valid
-		if (StringTool.isBlank(glueSource)) {
-			return Response.ofFail( (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_source")) );
-		}
-		if (glueRemark==null) {
-			return Response.ofFail( (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_remark")) );
-		}
-		if (glueRemark.length()<4 || glueRemark.length()>100) {
-			return Response.ofFail(I18nUtil.getString("jobinfo_glue_remark") + I18nUtil.getString("system_length_limit") + " 4~100");
-		}
-		if (XssUtil.hasXss(glueRemark)) {
-			return Response.ofFail(I18nUtil.getString("jobinfo_glue_remark") + I18nUtil.getString("system_invalid"));
-		}
-		XxlJobInfo existsJobInfo = xxlJobInfoMapper.loadById(id);
-		if (existsJobInfo == null) {
-			return Response.ofFail( I18nUtil.getString("jobinfo_glue_jobid_invalid"));
-		}
+    model.addAttribute("jobInfo", jobInfo);
+    model.addAttribute("jobLogGlues", jobLogGlues);
+    return "business/job.code";
+  }
 
-		// valid jobGroup permission
-		LoginInfo loginInfo = JobGroupPermissionUtil.validJobGroupPermission(request, existsJobInfo.getJobGroup());
+  @RequestMapping("/save")
+  @ResponseBody
+  public Response<String> save(HttpServletRequest request,
+                               @RequestParam("id") int id,
+                               @RequestParam("glueSource") String glueSource,
+                               @RequestParam("glueRemark") String glueRemark) {
 
-		// update new code
-		existsJobInfo.setGlueSource(glueSource);
-		existsJobInfo.setGlueRemark(glueRemark);
-		existsJobInfo.setGlueUpdatetime(new Date());
+    // valid
+    if (StringTool.isBlank(glueSource)) {
+      return Response.ofFail((I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_source")));
+    }
+    if (glueRemark == null) {
+      return Response.ofFail((I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_glue_remark")));
+    }
+    if (glueRemark.length() < 4 || glueRemark.length() > 100) {
+      return Response.ofFail(I18nUtil.getString("jobinfo_glue_remark") + I18nUtil.getString("system_length_limit") + " 4~100");
+    }
+    if (XssUtil.hasXss(glueRemark)) {
+      return Response.ofFail(I18nUtil.getString("jobinfo_glue_remark") + I18nUtil.getString("system_invalid"));
+    }
+    XxlJobInfo existsJobInfo = xxlJobInfoMapper.loadById(id);
+    if (existsJobInfo == null) {
+      return Response.ofFail(I18nUtil.getString("jobinfo_glue_jobid_invalid"));
+    }
 
-		existsJobInfo.setUpdateTime(new Date());
-		xxlJobInfoMapper.update(existsJobInfo);
+    // valid jobGroup permission
+    LoginInfo loginInfo = JobGroupPermissionUtil.validJobGroupPermission(request, existsJobInfo.getJobGroup());
 
-		// log old code
-		XxlJobLogGlue xxlJobLogGlue = new XxlJobLogGlue();
-		xxlJobLogGlue.setJobId(existsJobInfo.getId());
-		xxlJobLogGlue.setGlueType(existsJobInfo.getGlueType());
-		xxlJobLogGlue.setGlueSource(glueSource);
-		xxlJobLogGlue.setGlueRemark(glueRemark);
+    // update new code
+    existsJobInfo.setGlueSource(glueSource);
+    existsJobInfo.setGlueRemark(glueRemark);
+    existsJobInfo.setGlueUpdatetime(new Date());
 
-		xxlJobLogGlue.setAddTime(new Date());
-		xxlJobLogGlue.setUpdateTime(new Date());
-		xxlJobLogGlueMapper.save(xxlJobLogGlue);
+    existsJobInfo.setUpdateTime(new Date());
+    xxlJobInfoMapper.update(existsJobInfo);
 
-		// remove code backup more than 30
-		xxlJobLogGlueMapper.removeOld(existsJobInfo.getId(), 30);
+    // log old code
+    XxlJobLogGlue xxlJobLogGlue = new XxlJobLogGlue();
+    xxlJobLogGlue.setJobId(existsJobInfo.getId());
+    xxlJobLogGlue.setGlueType(existsJobInfo.getGlueType());
+    xxlJobLogGlue.setGlueSource(glueSource);
+    xxlJobLogGlue.setGlueRemark(glueRemark);
 
-		// write operation log
-		logger.info(">>>>>>>>>>> xxl-job operation log: operator = {}, type = {}, content = {}",
-				loginInfo.getUserName(), "jobcode-update", GsonTool.toJson(xxlJobLogGlue));
-		return Response.ofSuccess();
-	}
+    xxlJobLogGlue.setAddTime(new Date());
+    xxlJobLogGlue.setUpdateTime(new Date());
+    xxlJobLogGlueMapper.save(xxlJobLogGlue);
+
+    // remove code backup more than 30
+    xxlJobLogGlueMapper.removeOld(existsJobInfo.getId(), 30);
+
+    // write operation log
+    logger.info(">>>>>>>>>>> xxl-job operation log: operator = {}, type = {}, content = {}",
+        loginInfo.getUserName(), "jobcode-update", GsonTool.toJson(xxlJobLogGlue));
+    return Response.ofSuccess();
+  }
 
 }

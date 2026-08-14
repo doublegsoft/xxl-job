@@ -20,78 +20,78 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 public class OllamaTest {
-    private static final Logger logger = LoggerFactory.getLogger(OllamaTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(OllamaTest.class);
 
-    // ignore
-    @MockitoBean
-    private XxlJobSpringExecutor xxlJobSpringExecutor;
-
-
-    @Resource
-    private OllamaChatModel ollamaChatModel;
-
-    @Test
-    public void chatTest() {
-
-        String model = "qwen3.5:0.8b";
-        String prompt = "你是一个研发工程师，擅长解决技术类问题。";
-        String input = "Java实现二叉树层序遍历";
+  // ignore
+  @MockitoBean
+  private XxlJobSpringExecutor xxlJobSpringExecutor;
 
 
-        // build chat-client
-        ChatClient ollamaChatClient = ChatClient
-                .builder(ollamaChatModel)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
-                .defaultOptions(OllamaChatOptions.builder().model(model))
-                .build();
+  @Resource
+  private OllamaChatModel ollamaChatModel;
 
-        // call ollama
-        String response = ollamaChatClient
-                .prompt(prompt)
-                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
-                .user(input)
-                .call()
-                .content();
+  @Test
+  public void chatTest() {
 
-        logger.info("input: {}", input);
-        logger.info("response: {}", response);
-    }
-
-    @Test
-    public void chatStreamTest() throws InterruptedException {
-
-        String model = "qwen3.5:0.8b";
-        String prompt = "你是一个研发工程师，擅长解决技术类问题。";
-        String input = "Java实现二叉树层序遍历";
+    String model = "qwen3.5:0.8b";
+    String prompt = "你是一个研发工程师，擅长解决技术类问题。";
+    String input = "Java实现二叉树层序遍历";
 
 
-        // build chat-client
-        ChatClient ollamaChatClient = ChatClient
-                .builder(ollamaChatModel)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
-                .defaultOptions(OllamaChatOptions.builder().model(model))
-                .build();
+    // build chat-client
+    ChatClient ollamaChatClient = ChatClient
+        .builder(ollamaChatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
+        .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
+        .defaultOptions(OllamaChatOptions.builder().model(model))
+        .build();
 
-        // call ollama
-        logger.info("input: {}", input);
-        Flux<String> flux = ollamaChatClient
-                .prompt(prompt)
-                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
-                .user(input)
-                .stream()
-                .content();
+    // call ollama
+    String response = ollamaChatClient
+        .prompt(prompt)
+        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
+        .user(input)
+        .call()
+        .content();
 
-        flux.subscribe(
-                data -> System.out.println("Received: " + data),  // onNext 处理
-                error -> System.err.println("Error: " + error),   // onError 处理
-                () -> System.out.println("Completed")             // onComplete 处理
-        );
+    logger.info("input: {}", input);
+    logger.info("response: {}", response);
+  }
 
-        TimeUnit.SECONDS.sleep(10);
+  @Test
+  public void chatStreamTest() throws InterruptedException {
 
-    }
+    String model = "qwen3.5:0.8b";
+    String prompt = "你是一个研发工程师，擅长解决技术类问题。";
+    String input = "Java实现二叉树层序遍历";
+
+
+    // build chat-client
+    ChatClient ollamaChatClient = ChatClient
+        .builder(ollamaChatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
+        .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
+        .defaultOptions(OllamaChatOptions.builder().model(model))
+        .build();
+
+    // call ollama
+    logger.info("input: {}", input);
+    Flux<String> flux = ollamaChatClient
+        .prompt(prompt)
+        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
+        .user(input)
+        .stream()
+        .content();
+
+    flux.subscribe(
+        data -> System.out.println("Received: " + data),  // onNext 处理
+        error -> System.err.println("Error: " + error),   // onError 处理
+        () -> System.out.println("Completed")             // onComplete 处理
+    );
+
+    TimeUnit.SECONDS.sleep(10);
+
+  }
 
 
 }

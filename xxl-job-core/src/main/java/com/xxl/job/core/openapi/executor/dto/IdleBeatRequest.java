@@ -6,22 +6,23 @@ import java.io.Serializable;
  * @author xuxueli 2020-04-11 22:27
  */
 public class IdleBeatRequest implements Serializable {
-    private static final long serialVersionUID = 42L;
+  private static final long serialVersionUID = 42L;
 
-    private int jobId;
+  private int jobId;
 
-    public IdleBeatRequest() {
-    }
-    public IdleBeatRequest(int jobId) {
-        this.jobId = jobId;
-    }
+  public IdleBeatRequest() {
+  }
 
-    public int getJobId() {
-        return jobId;
-    }
+  public IdleBeatRequest(int jobId) {
+    this.jobId = jobId;
+  }
 
-    public void setJobId(int jobId) {
-        this.jobId = jobId;
-    }
+  public int getJobId() {
+    return jobId;
+  }
+
+  public void setJobId(int jobId) {
+    this.jobId = jobId;
+  }
 
 }

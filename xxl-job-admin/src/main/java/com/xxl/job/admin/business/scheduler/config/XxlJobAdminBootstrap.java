@@ -32,289 +32,292 @@ import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class XxlJobAdminBootstrap implements InitializingBean, DisposableBean {
-    private static final Logger logger = LoggerFactory.getLogger(XxlJobAdminBootstrap.class);
+  private static final Logger logger = LoggerFactory.getLogger(XxlJobAdminBootstrap.class);
 
-    // ---------------------- instance ----------------------
+  // ---------------------- instance ----------------------
 
-    private static XxlJobAdminBootstrap adminConfig = null;
-    public static XxlJobAdminBootstrap getInstance() {
-        return adminConfig;
+  private static XxlJobAdminBootstrap adminConfig = null;
+
+  public static XxlJobAdminBootstrap getInstance() {
+    return adminConfig;
+  }
+
+
+  // ---------------------- start / stop ----------------------
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    // init instance
+    adminConfig = this;
+
+    // start
+    doStart();
+  }
+
+  @Override
+  public void destroy() throws Exception {
+    // stop
+    doStop();
+  }
+
+  // job module
+  private JobTriggerPoolHelper jobTriggerPoolHelper;
+  private JobRegistryHelper jobRegistryHelper;
+  private JobFailAlarmMonitorHelper jobFailAlarmMonitorHelper;
+  private JobCompleteHelper jobCompleteHelper;
+  private JobLogReportHelper jobLogReportHelper;
+  private JobScheduleHelper jobScheduleHelper;
+
+  public JobTriggerPoolHelper getJobTriggerPoolHelper() {
+    return jobTriggerPoolHelper;
+  }
+
+  public JobRegistryHelper getJobRegistryHelper() {
+    return jobRegistryHelper;
+  }
+
+  public JobCompleteHelper getJobCompleteHelper() {
+    return jobCompleteHelper;
+  }
+
+  /**
+   * do start
+   */
+  private void doStart() throws Exception {
+    // trigger-pool start
+    jobTriggerPoolHelper = new JobTriggerPoolHelper();
+    jobTriggerPoolHelper.start();
+
+    // registry monitor start
+    jobRegistryHelper = new JobRegistryHelper();
+    jobRegistryHelper.start();
+
+    // fail-alarm monitor start
+    jobFailAlarmMonitorHelper = new JobFailAlarmMonitorHelper();
+    jobFailAlarmMonitorHelper.start();
+
+    // job complate start  ( depend on JobTriggerPoolHelper ) for callback and result-lost
+    jobCompleteHelper = new JobCompleteHelper();
+    jobCompleteHelper.start();
+
+    // log-report start
+    jobLogReportHelper = new JobLogReportHelper();
+    jobLogReportHelper.start();
+
+    // job-schedule start  ( depend on JobTriggerPoolHelper )
+    jobScheduleHelper = new JobScheduleHelper();
+    jobScheduleHelper.start();
+
+    logger.info(">>>>>>>>> xxl-job admin start success.");
+  }
+
+  /**
+   * do stop
+   */
+  private void doStop() {
+    // job-schedule stop
+    jobScheduleHelper.stop();
+
+    // log-report stop
+    jobLogReportHelper.stop();
+
+    // job complate stop
+    jobCompleteHelper.stop();
+
+    // fail-alarm monitor stop
+    jobFailAlarmMonitorHelper.stop();
+
+    // registry monitor stop
+    jobRegistryHelper.stop();
+
+    // trigger-pool stop
+    jobTriggerPoolHelper.stop();
+
+    logger.info(">>>>>>>>> xxl-job admin stopped.");
+  }
+
+
+  // ---------------------- executor-client ----------------------
+
+  private static final ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<>();
+  private static final int EXECUTOR_BIZ_CACHE_MAX_SIZE = 1000;
+
+  /**
+   * get executor-client
+   */
+  public static ExecutorBiz getExecutorBiz(String address, XxlJobGroup xxlJobGroup) throws Exception {
+    // valid
+    if (StringTool.isBlank(address) || xxlJobGroup == null) {
+      return null;
+    }
+    address = address.trim();
+    String accessToken = xxlJobGroup.getAccessToken();
+    String appname = xxlJobGroup.getAppname();
+
+    // load-cache
+    String cacheKey = address + "|" + accessToken + "|" + appname;
+    ExecutorBiz executorBiz = executorBizRepository.get(cacheKey);
+    if (executorBiz != null) {
+      return executorBiz;
     }
 
+    // new client
+    executorBiz = HttpTool.createClient()
+        .url(address)
+        .timeout(XxlJobAdminBootstrap.getInstance().getTimeout() * 1000)
+        .header(Const.XXL_JOB_ACCESS_TOKEN, accessToken)
+        .header(Const.XXL_JOB_APPNAME, appname)
+        .proxy(ExecutorBiz.class);
+    executorBizRepository.put(cacheKey, executorBiz);
 
-    // ---------------------- start / stop ----------------------
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        // init instance
-        adminConfig = this;
-
-        // start
-        doStart();
+    // avoid unbounded growth
+    if (executorBizRepository.size() > EXECUTOR_BIZ_CACHE_MAX_SIZE) {
+      executorBizRepository.clear();
     }
+    return executorBiz;
+  }
 
-    @Override
-    public void destroy() throws Exception {
-        // stop
-        doStop();
+
+  // ---------------------- field ----------------------
+
+  // conf
+  @Value("${xxl.job.i18n}")
+  private String i18n;
+
+  @Value("${xxl.job.timeout}")
+  private int timeout;
+
+  @Value("${spring.mail.from}")
+  private String emailFrom;
+
+  @Value("${xxl.job.triggerpool.fast.max}")
+  private int triggerPoolFastMax;
+
+  @Value("${xxl.job.triggerpool.slow.max}")
+  private int triggerPoolSlowMax;
+
+  @Value("${xxl.job.schedule.batchsize}")
+  private int scheduleBatchSize;
+
+  @Value("${xxl.job.logretentiondays}")
+  private int logretentiondays;
+
+  // service, mapper
+  @Resource
+  private XxlJobLogMapper xxlJobLogMapper;
+  @Resource
+  private XxlJobInfoMapper xxlJobInfoMapper;
+  @Resource
+  private XxlJobRegistryMapper xxlJobRegistryMapper;
+  @Resource
+  private XxlJobGroupMapper xxlJobGroupMapper;
+  @Resource
+  private XxlJobLogReportMapper xxlJobLogReportMapper;
+  @Resource
+  private XxlJobLockMapper xxlJobLockMapper;
+  @Resource
+  private JavaMailSender mailSender;
+  /*@Resource
+  private DataSource dataSource;*/
+  @Resource
+  private PlatformTransactionManager transactionManager;
+  @Resource
+  private JobAlarmer jobAlarmer;
+  @Resource
+  private JobTrigger jobTrigger;
+  @Resource
+  private JobCompleter jobCompleter;
+
+
+  public String getI18n() {
+    if (!Arrays.asList("zh_CN", "zh_TC", "en").contains(i18n)) {
+      return "zh_CN";
     }
+    return i18n;
+  }
 
-    // job module
-    private JobTriggerPoolHelper jobTriggerPoolHelper;
-    private JobRegistryHelper jobRegistryHelper;
-    private JobFailAlarmMonitorHelper jobFailAlarmMonitorHelper;
-    private JobCompleteHelper jobCompleteHelper;
-    private JobLogReportHelper jobLogReportHelper;
-    private JobScheduleHelper jobScheduleHelper;
+  public int getTimeout() {
+    return timeout;
+  }
 
-    public JobTriggerPoolHelper getJobTriggerPoolHelper() {
-        return jobTriggerPoolHelper;
+  public String getEmailFrom() {
+    return emailFrom;
+  }
+
+  public int getTriggerPoolFastMax() {
+    if (triggerPoolFastMax < 200) {
+      return 200;
     }
-    public JobRegistryHelper getJobRegistryHelper() {
-        return jobRegistryHelper;
+    return triggerPoolFastMax;
+  }
+
+  public int getTriggerPoolSlowMax() {
+    if (triggerPoolSlowMax < 100) {
+      return 100;
     }
-    public JobCompleteHelper getJobCompleteHelper() {
-        return jobCompleteHelper;
+    return triggerPoolSlowMax;
+  }
+
+  public int getScheduleBatchSize() {
+    if (!(scheduleBatchSize >= 50 && scheduleBatchSize <= 500)) {
+      return 100;
     }
+    return scheduleBatchSize;
+  }
 
-    /**
-     * do start
-     */
-    private void doStart() throws Exception {
-        // trigger-pool start
-        jobTriggerPoolHelper = new JobTriggerPoolHelper();
-        jobTriggerPoolHelper.start();
-
-        // registry monitor start
-        jobRegistryHelper = new JobRegistryHelper();
-        jobRegistryHelper.start();
-
-        // fail-alarm monitor start
-        jobFailAlarmMonitorHelper = new JobFailAlarmMonitorHelper();
-        jobFailAlarmMonitorHelper.start();
-
-        // job complate start  ( depend on JobTriggerPoolHelper ) for callback and result-lost
-        jobCompleteHelper = new JobCompleteHelper();
-        jobCompleteHelper.start();
-
-        // log-report start
-        jobLogReportHelper = new JobLogReportHelper();
-        jobLogReportHelper.start();
-
-        // job-schedule start  ( depend on JobTriggerPoolHelper )
-        jobScheduleHelper = new JobScheduleHelper();
-        jobScheduleHelper.start();
-
-        logger.info(">>>>>>>>> xxl-job admin start success.");
+  public int getLogretentiondays() {
+    if (logretentiondays < 3) {
+      return -1;  // Limit greater than or equal to 3, otherwise close
     }
+    return logretentiondays;
+  }
 
-    /**
-     * do stop
-     */
-    private void doStop(){
-        // job-schedule stop
-        jobScheduleHelper.stop();
+  public XxlJobLogMapper getXxlJobLogMapper() {
+    return xxlJobLogMapper;
+  }
 
-        // log-report stop
-        jobLogReportHelper.stop();
+  public XxlJobInfoMapper getXxlJobInfoMapper() {
+    return xxlJobInfoMapper;
+  }
 
-        // job complate stop
-        jobCompleteHelper.stop();
+  public XxlJobRegistryMapper getXxlJobRegistryMapper() {
+    return xxlJobRegistryMapper;
+  }
 
-        // fail-alarm monitor stop
-        jobFailAlarmMonitorHelper.stop();
+  public XxlJobGroupMapper getXxlJobGroupMapper() {
+    return xxlJobGroupMapper;
+  }
 
-        // registry monitor stop
-        jobRegistryHelper.stop();
+  public XxlJobLogReportMapper getXxlJobLogReportMapper() {
+    return xxlJobLogReportMapper;
+  }
 
-        // trigger-pool stop
-        jobTriggerPoolHelper.stop();
+  public XxlJobLockMapper getXxlJobLockMapper() {
+    return xxlJobLockMapper;
+  }
 
-        logger.info(">>>>>>>>> xxl-job admin stopped.");
-    }
-
-
-    // ---------------------- executor-client ----------------------
-
-    private static final ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<>();
-    private static final int EXECUTOR_BIZ_CACHE_MAX_SIZE = 1000;
-
-    /**
-     * get executor-client
-     */
-    public static ExecutorBiz getExecutorBiz(String address, XxlJobGroup xxlJobGroup) throws Exception {
-        // valid
-        if (StringTool.isBlank(address) || xxlJobGroup == null) {
-            return null;
-        }
-        address = address.trim();
-        String accessToken = xxlJobGroup.getAccessToken();
-        String appname = xxlJobGroup.getAppname();
-
-        // load-cache
-        String cacheKey = address + "|" + accessToken + "|" + appname;
-        ExecutorBiz executorBiz = executorBizRepository.get(cacheKey);
-        if (executorBiz != null) {
-            return executorBiz;
-        }
-
-        // new client
-        executorBiz = HttpTool.createClient()
-                .url(address)
-                .timeout(XxlJobAdminBootstrap.getInstance().getTimeout() * 1000)
-                .header(Const.XXL_JOB_ACCESS_TOKEN, accessToken)
-                .header(Const.XXL_JOB_APPNAME, appname)
-                .proxy(ExecutorBiz.class);
-        executorBizRepository.put(cacheKey, executorBiz);
-
-        // avoid unbounded growth
-        if (executorBizRepository.size() > EXECUTOR_BIZ_CACHE_MAX_SIZE) {
-            executorBizRepository.clear();
-        }
-        return executorBiz;
-    }
-
-
-    // ---------------------- field ----------------------
-
-    // conf
-    @Value("${xxl.job.i18n}")
-    private String i18n;
-
-    @Value("${xxl.job.timeout}")
-    private int timeout;
-
-    @Value("${spring.mail.from}")
-    private String emailFrom;
-
-    @Value("${xxl.job.triggerpool.fast.max}")
-    private int triggerPoolFastMax;
-
-    @Value("${xxl.job.triggerpool.slow.max}")
-    private int triggerPoolSlowMax;
-
-    @Value("${xxl.job.schedule.batchsize}")
-    private int scheduleBatchSize;
-
-    @Value("${xxl.job.logretentiondays}")
-    private int logretentiondays;
-
-    // service, mapper
-    @Resource
-    private XxlJobLogMapper xxlJobLogMapper;
-    @Resource
-    private XxlJobInfoMapper xxlJobInfoMapper;
-    @Resource
-    private XxlJobRegistryMapper xxlJobRegistryMapper;
-    @Resource
-    private XxlJobGroupMapper xxlJobGroupMapper;
-    @Resource
-    private XxlJobLogReportMapper xxlJobLogReportMapper;
-    @Resource
-    private XxlJobLockMapper xxlJobLockMapper;
-    @Resource
-    private JavaMailSender mailSender;
-    /*@Resource
-    private DataSource dataSource;*/
-    @Resource
-    private PlatformTransactionManager transactionManager;
-    @Resource
-    private JobAlarmer jobAlarmer;
-    @Resource
-    private JobTrigger jobTrigger;
-    @Resource
-    private JobCompleter jobCompleter;
-
-
-    public String getI18n() {
-        if (!Arrays.asList("zh_CN", "zh_TC", "en").contains(i18n)) {
-            return "zh_CN";
-        }
-        return i18n;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public String getEmailFrom() {
-        return emailFrom;
-    }
-
-    public int getTriggerPoolFastMax() {
-        if (triggerPoolFastMax < 200) {
-            return 200;
-        }
-        return triggerPoolFastMax;
-    }
-
-    public int getTriggerPoolSlowMax() {
-        if (triggerPoolSlowMax < 100) {
-            return 100;
-        }
-        return triggerPoolSlowMax;
-    }
-
-    public int getScheduleBatchSize() {
-        if (!(scheduleBatchSize >=50 && scheduleBatchSize <= 500)) {
-            return 100;
-        }
-        return scheduleBatchSize;
-    }
-
-    public int getLogretentiondays() {
-        if (logretentiondays < 3) {
-            return -1;  // Limit greater than or equal to 3, otherwise close
-        }
-        return logretentiondays;
-    }
-
-    public XxlJobLogMapper getXxlJobLogMapper() {
-        return xxlJobLogMapper;
-    }
-
-    public XxlJobInfoMapper getXxlJobInfoMapper() {
-        return xxlJobInfoMapper;
-    }
-
-    public XxlJobRegistryMapper getXxlJobRegistryMapper() {
-        return xxlJobRegistryMapper;
-    }
-
-    public XxlJobGroupMapper getXxlJobGroupMapper() {
-        return xxlJobGroupMapper;
-    }
-
-    public XxlJobLogReportMapper getXxlJobLogReportMapper() {
-        return xxlJobLogReportMapper;
-    }
-
-    public XxlJobLockMapper getXxlJobLockMapper() {
-        return xxlJobLockMapper;
-    }
-
-    public JavaMailSender getMailSender() {
-        return mailSender;
-    }
+  public JavaMailSender getMailSender() {
+    return mailSender;
+  }
 
     /*public DataSource getDataSource() {
         return dataSource;
     }*/
 
-    public PlatformTransactionManager getTransactionManager() {
-        return transactionManager;
-    }
+  public PlatformTransactionManager getTransactionManager() {
+    return transactionManager;
+  }
 
-    public JobAlarmer getJobAlarmer() {
-        return jobAlarmer;
-    }
+  public JobAlarmer getJobAlarmer() {
+    return jobAlarmer;
+  }
 
-    public JobTrigger getJobTrigger() {
-        return jobTrigger;
-    }
+  public JobTrigger getJobTrigger() {
+    return jobTrigger;
+  }
 
-    public JobCompleter getJobCompleter() {
-        return jobCompleter;
-    }
+  public JobCompleter getJobCompleter() {
+    return jobCompleter;
+  }
 
 }

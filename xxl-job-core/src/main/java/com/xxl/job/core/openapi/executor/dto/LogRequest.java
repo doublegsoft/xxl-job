@@ -6,42 +6,43 @@ import java.io.Serializable;
  * @author xuxueli 2020-04-11 22:27
  */
 public class LogRequest implements Serializable {
-    private static final long serialVersionUID = 42L;
+  private static final long serialVersionUID = 42L;
 
-    private long logId;
-    private long logDateTime;
-    private int fromLineNum;
+  private long logId;
+  private long logDateTime;
+  private int fromLineNum;
 
-    public LogRequest() {
-    }
-    public LogRequest(long logId, long logDateTime, int fromLineNum) {
-        this.logId = logId;
-        this.logDateTime = logDateTime;
-        this.fromLineNum = fromLineNum;
-    }
+  public LogRequest() {
+  }
 
-    public long getLogDateTime() {
-        return logDateTime;
-    }
+  public LogRequest(long logId, long logDateTime, int fromLineNum) {
+    this.logId = logId;
+    this.logDateTime = logDateTime;
+    this.fromLineNum = fromLineNum;
+  }
 
-    public void setLogDateTime(long logDateTime) {
-        this.logDateTime = logDateTime;
-    }
+  public long getLogDateTime() {
+    return logDateTime;
+  }
 
-    public long getLogId() {
-        return logId;
-    }
+  public void setLogDateTime(long logDateTime) {
+    this.logDateTime = logDateTime;
+  }
 
-    public void setLogId(long logId) {
-        this.logId = logId;
-    }
+  public long getLogId() {
+    return logId;
+  }
 
-    public int getFromLineNum() {
-        return fromLineNum;
-    }
+  public void setLogId(long logId) {
+    this.logId = logId;
+  }
 
-    public void setFromLineNum(int fromLineNum) {
-        this.fromLineNum = fromLineNum;
-    }
+  public int getFromLineNum() {
+    return fromLineNum;
+  }
+
+  public void setFromLineNum(int fromLineNum) {
+    this.fromLineNum = fromLineNum;
+  }
 
 }

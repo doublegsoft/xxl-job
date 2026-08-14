@@ -7,11 +7,11 @@ package com.xxl.job.admin.business.scheduler.misfire;
  */
 public abstract class MisfireHandler {
 
-    /**
-     * misfire handle
-     *
-     * @param jobId jobId
-     */
-    public abstract void handle(final int jobId);
+  /**
+   * misfire handle
+   *
+   * @param jobId jobId
+   */
+  public abstract void handle(final int jobId);
 
 }

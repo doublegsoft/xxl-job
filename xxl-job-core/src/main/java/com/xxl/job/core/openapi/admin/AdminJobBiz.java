@@ -13,34 +13,34 @@ import com.xxl.tool.response.Response;
  */
 public interface AdminJobBiz {
 
-    /**
-     * add a new job
-     */
-    Response<String> addJob(JobAddRequest request);
+  /**
+   * add a new job
+   */
+  Response<String> addJob(JobAddRequest request);
 
-    /**
-     * update existing job config
-     */
-    Response<String> updateJob(JobUpdateRequest request);
+  /**
+   * update existing job config
+   */
+  Response<String> updateJob(JobUpdateRequest request);
 
-    /**
-     * remove a job by id
-     */
-    Response<String> removeJob(JobOperateRequest request);
+  /**
+   * remove a job by id
+   */
+  Response<String> removeJob(JobOperateRequest request);
 
-    /**
-     * start / enable a scheduled job
-     */
-    Response<String> startJob(JobOperateRequest request);
+  /**
+   * start / enable a scheduled job
+   */
+  Response<String> startJob(JobOperateRequest request);
 
-    /**
-     * stop / disable a scheduled job
-     */
-    Response<String> stopJob(JobOperateRequest request);
+  /**
+   * stop / disable a scheduled job
+   */
+  Response<String> stopJob(JobOperateRequest request);
 
-    /**
-     * trigger a job manually once
-     */
-    Response<String> triggerJob(JobTriggerRequest request);
+  /**
+   * trigger a job manually once
+   */
+  Response<String> triggerJob(JobTriggerRequest request);
 
 }

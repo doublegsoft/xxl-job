@@ -5,181 +5,182 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  XxlBootResource DTO
- *
- *  Created by xuxueli on 2024-08-04
+ * XxlBootResource DTO
+ * <p>
+ * Created by xuxueli on 2024-08-04
  */
 public class XxlBootResourceDTO implements Serializable {
-    private static final long serialVersionUID = 42L;
+  private static final long serialVersionUID = 42L;
 
-    /**
-     * 资源ID
-     */
-    private int id;
+  /**
+   * 资源ID
+   */
+  private int id;
 
-    /**
-     * 父节点ID
-     */
-    private int parentId;
+  /**
+   * 父节点ID
+   */
+  private int parentId;
 
-    /**
-     * 名称
-     */
-    private String name;
+  /**
+   * 名称
+   */
+  private String name;
 
-    /**
-     * 类型：0-目录, 1-菜单, 2-按钮
-     */
-    private int type;
+  /**
+   * 类型：0-目录, 1-菜单, 2-按钮
+   */
+  private int type;
 
-    /**
-     * 权限标识
-     */
-    private String permission;
+  /**
+   * 权限标识
+   */
+  private String permission;
 
-    /**
-     * 菜单地址
-     */
-    private String url;
+  /**
+   * 菜单地址
+   */
+  private String url;
 
-    /**
-     * ICON
-     */
-    private String icon;
+  /**
+   * ICON
+   */
+  private String icon;
 
-    /**
-     * 顺序
-     */
-    private int order;
+  /**
+   * 顺序
+   */
+  private int order;
 
-    /**
-     * 状态：0-正常、1-禁用
-     */
-    private int status;
+  /**
+   * 状态：0-正常、1-禁用
+   */
+  private int status;
 
-    /**
-     * 新增时间
-     */
-    private Date addTime;
+  /**
+   * 新增时间
+   */
+  private Date addTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+  /**
+   * 更新时间
+   */
+  private Date updateTime;
 
-    /**
-     * child data
-     */
-    private List<XxlBootResourceDTO> children;
+  /**
+   * child data
+   */
+  private List<XxlBootResourceDTO> children;
 
-    public XxlBootResourceDTO() {
-    }
-    public XxlBootResourceDTO(int id, int parentId, String name, int type, String permission, String url, String icon, int order, int status, List<XxlBootResourceDTO> children) {
-        this.id = id;
-        this.parentId = parentId;
-        this.name = name;
-        this.type = type;
-        this.permission = permission;
-        this.url = url;
-        this.icon = icon;
-        this.order = order;
-        this.status = status;
-        this.children = children;
-    }
+  public XxlBootResourceDTO() {
+  }
 
-    public int getId() {
-        return id;
-    }
+  public XxlBootResourceDTO(int id, int parentId, String name, int type, String permission, String url, String icon, int order, int status, List<XxlBootResourceDTO> children) {
+    this.id = id;
+    this.parentId = parentId;
+    this.name = name;
+    this.type = type;
+    this.permission = permission;
+    this.url = url;
+    this.icon = icon;
+    this.order = order;
+    this.status = status;
+    this.children = children;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public int getParentId() {
-        return parentId;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
+  public int getParentId() {
+    return parentId;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setParentId(int parentId) {
+    this.parentId = parentId;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public int getType() {
-        return type;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setType(int type) {
-        this.type = type;
-    }
+  public int getType() {
+    return type;
+  }
 
-    public String getPermission() {
-        return permission;
-    }
+  public void setType(int type) {
+    this.type = type;
+  }
 
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
+  public String getPermission() {
+    return permission;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public void setPermission(String permission) {
+    this.permission = permission;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public String getIcon() {
-        return icon;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+  public String getIcon() {
+    return icon;
+  }
 
-    public int getOrder() {
-        return order;
-    }
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
 
-    public void setOrder(int order) {
-        this.order = order;
-    }
+  public int getOrder() {
+    return order;
+  }
 
-    public int getStatus() {
-        return status;
-    }
+  public void setOrder(int order) {
+    this.order = order;
+  }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
+  public int getStatus() {
+    return status;
+  }
 
-    public Date getAddTime() {
-        return addTime;
-    }
+  public void setStatus(int status) {
+    this.status = status;
+  }
 
-    public void setAddTime(Date addTime) {
-        this.addTime = addTime;
-    }
+  public Date getAddTime() {
+    return addTime;
+  }
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
+  public void setAddTime(Date addTime) {
+    this.addTime = addTime;
+  }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+  public Date getUpdateTime() {
+    return updateTime;
+  }
 
-    public List<XxlBootResourceDTO> getChildren() {
-        return children;
-    }
+  public void setUpdateTime(Date updateTime) {
+    this.updateTime = updateTime;
+  }
 
-    public void setChildren(List<XxlBootResourceDTO> children) {
-        this.children = children;
-    }
+  public List<XxlBootResourceDTO> getChildren() {
+    return children;
+  }
+
+  public void setChildren(List<XxlBootResourceDTO> children) {
+    this.children = children;
+  }
 }

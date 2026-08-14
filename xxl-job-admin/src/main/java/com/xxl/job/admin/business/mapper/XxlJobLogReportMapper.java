@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * job log
+ *
  * @author xuxueli 2019-11-22
  */
 @Mapper
@@ -18,11 +19,11 @@ public interface XxlJobLogReportMapper {
 
 	public int update(XxlJobLogReport xxlJobLogReport);*/
 
-	public int saveOrUpdate(XxlJobLogReport xxlJobLogReport);
+  public int saveOrUpdate(XxlJobLogReport xxlJobLogReport);
 
-	public List<XxlJobLogReport> queryLogReport(@Param("triggerDayFrom") Date triggerDayFrom,
-												@Param("triggerDayTo") Date triggerDayTo);
+  public List<XxlJobLogReport> queryLogReport(@Param("triggerDayFrom") Date triggerDayFrom,
+                                              @Param("triggerDayTo") Date triggerDayTo);
 
-	public XxlJobLogReport queryLogReportTotal();
+  public XxlJobLogReport queryLogReportTotal();
 
 }

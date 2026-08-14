@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface XxlJobLockMapper {
 
-    /**
-     * get schedule lock
-     */
-    String scheduleLock();
+  /**
+   * get schedule lock
+   */
+  String scheduleLock();
 
 }

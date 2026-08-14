@@ -17,34 +17,34 @@ import java.util.List;
  */
 @Component
 public class JobAlarmer {
-    private static final Logger logger = LoggerFactory.getLogger(JobAlarmer.class);
+  private static final Logger logger = LoggerFactory.getLogger(JobAlarmer.class);
 
-    @Autowired
-    private List<JobAlarm> jobAlarmList;
+  @Autowired
+  private List<JobAlarm> jobAlarmList;
 
-    /**
-     * job alarm
-     */
-    public boolean alarm(XxlJobInfo info, XxlJobLog jobLog) {
+  /**
+   * job alarm
+   */
+  public boolean alarm(XxlJobInfo info, XxlJobLog jobLog) {
 
-        boolean result = false;
-        if (CollectionTool.isNotEmpty(jobAlarmList)) {
-            result = true;  // success means all-success
-            for (JobAlarm alarm: jobAlarmList) {
-                boolean resultItem = false;
-                try {
-                    resultItem = alarm.doAlarm(info, jobLog);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-                if (!resultItem) {
-                    result = false;
-                }
-            }
+    boolean result = false;
+    if (CollectionTool.isNotEmpty(jobAlarmList)) {
+      result = true;  // success means all-success
+      for (JobAlarm alarm : jobAlarmList) {
+        boolean resultItem = false;
+        try {
+          resultItem = alarm.doAlarm(info, jobLog);
+        } catch (Exception e) {
+          logger.error(e.getMessage(), e);
         }
-
-        return result;
+        if (!resultItem) {
+          result = false;
+        }
+      }
     }
+
+    return result;
+  }
 
     /*
     // implements SmartInitializingSingleton

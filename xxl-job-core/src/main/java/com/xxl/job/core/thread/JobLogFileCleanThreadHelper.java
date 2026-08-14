@@ -17,95 +17,95 @@ import java.util.Date;
  * @author xuxueli 2017-12-29 16:23:43
  */
 public class JobLogFileCleanThreadHelper {
-    private static final Logger logger = LoggerFactory.getLogger(JobLogFileCleanThreadHelper.class);
+  private static final Logger logger = LoggerFactory.getLogger(JobLogFileCleanThreadHelper.class);
 
+
+  /**
+   * monitor thread
+   */
+  private CyclicThread logFileCleanThread;
+
+
+  /**
+   * start
+   */
+  public void start(final long logRetentionDays) {
 
     /**
-     * monitor thread
+     * limit min value
      */
-    private CyclicThread logFileCleanThread;
-
+    if (logRetentionDays < 3) {
+      return;     // effective only when logRetentionDays >= 3
+    }
 
     /**
-     * start
+     * logFileCleanThread
      */
-    public void start(final long logRetentionDays){
+    logFileCleanThread = new CyclicThread("JobLogFileCleanThreadHelper#logFileCleanThread", true, new Runnable() {
+      @Override
+      public void run() {
+        // clean log dir, over logRetentionDays
+        File[] childDirs = new File(XxlJobFileAppender.getLogPath()).listFiles();
+        if (childDirs != null && childDirs.length > 0) {
 
-        /**
-         * limit min value
-          */
-        if (logRetentionDays < 3 ) {
-            return;     // effective only when logRetentionDays >= 3
-        }
+          // today
+          Calendar todayCal = Calendar.getInstance();
+          todayCal.set(Calendar.HOUR_OF_DAY, 0);
+          todayCal.set(Calendar.MINUTE, 0);
+          todayCal.set(Calendar.SECOND, 0);
+          todayCal.set(Calendar.MILLISECOND, 0);
 
-        /**
-         * logFileCleanThread
-         */
-        logFileCleanThread = new CyclicThread("JobLogFileCleanThreadHelper#logFileCleanThread", true, new Runnable() {
-            @Override
-            public void run() {
-                // clean log dir, over logRetentionDays
-                File[] childDirs = new File(XxlJobFileAppender.getLogPath()).listFiles();
-                if (childDirs!=null && childDirs.length>0) {
+          Date todayDate = todayCal.getTime();
 
-                    // today
-                    Calendar todayCal = Calendar.getInstance();
-                    todayCal.set(Calendar.HOUR_OF_DAY,0);
-                    todayCal.set(Calendar.MINUTE,0);
-                    todayCal.set(Calendar.SECOND,0);
-                    todayCal.set(Calendar.MILLISECOND,0);
+          // clean expired logfile
+          for (File childFile : childDirs) {
 
-                    Date todayDate = todayCal.getTime();
-
-                    // clean expired logfile
-                    for (File childFile: childDirs) {
-
-                        // valid log-path: must be directory
-                        if (!childFile.isDirectory()) {
-                            continue;
-                        }
-
-                        // valid day log-path: like "---/2017-12-25/639.log"
-                        if (!childFile.getName().contains("-")) {
-                            continue;
-                        }
-
-                        // parse create-day of file-path
-                        Date logFileCreateDate = null;
-                        try {
-                            logFileCreateDate = DateTool.parseDate(childFile.getName());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                        if (logFileCreateDate == null) {
-                            continue;
-                        }
-
-                        // check expired
-                        Date expiredDate = DateTool.addDays(logFileCreateDate, logRetentionDays);
-                        if (todayDate.getTime() > expiredDate.getTime()) {
-                            // expired, remove all log of this day
-                            FileTool.delete(childFile);
-                            //FileUtil.deleteRecursively(childFile);
-                        }
-                    }
-                }
+            // valid log-path: must be directory
+            if (!childFile.isDirectory()) {
+              continue;
             }
-        }, DateTool.MILLIS_PER_DAY, true);
-        logFileCleanThread.start();
 
-    }
+            // valid day log-path: like "---/2017-12-25/639.log"
+            if (!childFile.getName().contains("-")) {
+              continue;
+            }
 
-    /**
-     * stop
-     */
-    public void stop() {
+            // parse create-day of file-path
+            Date logFileCreateDate = null;
+            try {
+              logFileCreateDate = DateTool.parseDate(childFile.getName());
+            } catch (Exception e) {
+              logger.error(e.getMessage(), e);
+            }
+            if (logFileCreateDate == null) {
+              continue;
+            }
 
-        // stop logFileCleanThread
-        if (logFileCleanThread != null) {
-            logFileCleanThread.stop();
+            // check expired
+            Date expiredDate = DateTool.addDays(logFileCreateDate, logRetentionDays);
+            if (todayDate.getTime() > expiredDate.getTime()) {
+              // expired, remove all log of this day
+              FileTool.delete(childFile);
+              //FileUtil.deleteRecursively(childFile);
+            }
+          }
         }
+      }
+    }, DateTool.MILLIS_PER_DAY, true);
+    logFileCleanThread.start();
 
+  }
+
+  /**
+   * stop
+   */
+  public void stop() {
+
+    // stop logFileCleanThread
+    if (logFileCleanThread != null) {
+      logFileCleanThread.stop();
     }
+
+  }
 
 }

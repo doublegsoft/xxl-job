@@ -10,9 +10,9 @@ import com.xxl.tool.response.Response;
  */
 public class ExecutorRouteFirst extends ExecutorRouter {
 
-    @Override
-    public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup){
-        return Response.ofSuccess(jobGroup.getRegistryList().get(0));
-    }
+  @Override
+  public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
+    return Response.ofSuccess(jobGroup.getRegistryList().get(0));
+  }
 
 }

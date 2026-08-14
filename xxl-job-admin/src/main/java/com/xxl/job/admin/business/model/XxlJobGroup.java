@@ -12,93 +12,94 @@ import java.util.List;
  */
 public class XxlJobGroup {
 
-    private int id;
-    private String appname;
-    private String name;
+  private int id;
+  private String appname;
+  private String name;
 
-    private int addressType;        // 执行器地址类型：0=自动注册、1=手动录入
-    private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
+  private int addressType;        // 执行器地址类型：0=自动注册、1=手动录入
+  private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
 
-    private String accessToken;
-    private Date updateTime;
+  private String accessToken;
+  private Date updateTime;
 
-    // registry list
-    private List<String> registryList;  // 执行器地址列表(系统注册)
-    public List<String> getRegistryList() {
+  // registry list
+  private List<String> registryList;  // 执行器地址列表(系统注册)
 
-        if (StringTool.isNotBlank(addressList)) {
-            registryList = StringTool.split(addressList, ",");
-        }
-        return registryList;
+  public List<String> getRegistryList() {
+
+    if (StringTool.isNotBlank(addressList)) {
+      registryList = StringTool.split(addressList, ",");
     }
+    return registryList;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public String getAppname() {
-        return appname;
-    }
+  public String getAppname() {
+    return appname;
+  }
 
-    public void setAppname(String appname) {
-        this.appname = appname;
-    }
+  public void setAppname(String appname) {
+    this.appname = appname;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public int getAddressType() {
-        return addressType;
-    }
+  public int getAddressType() {
+    return addressType;
+  }
 
-    public void setAddressType(int addressType) {
-        this.addressType = addressType;
-    }
+  public void setAddressType(int addressType) {
+    this.addressType = addressType;
+  }
 
-    public String getAddressList() {
-        return addressList;
-    }
+  public String getAddressList() {
+    return addressList;
+  }
 
-    public void setAddressList(String addressList) {
-        this.addressList = addressList;
-    }
+  public void setAddressList(String addressList) {
+    this.addressList = addressList;
+  }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
+  public String getAccessToken() {
+    return accessToken;
+  }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
+  public Date getUpdateTime() {
+    return updateTime;
+  }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+  public void setUpdateTime(Date updateTime) {
+    this.updateTime = updateTime;
+  }
 
-    @Override
-    public String toString() {
-        return "XxlJobGroup{" +
-                "id=" + id +
-                ", appname='" + appname + '\'' +
-                ", name='" + name + '\'' +
-                ", addressType=" + addressType +
-                ", addressList='" + addressList + '\'' +
-                ", accessToken='" + accessToken + '\'' +
-                ", updateTime=" + updateTime +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "XxlJobGroup{" +
+        "id=" + id +
+        ", appname='" + appname + '\'' +
+        ", name='" + name + '\'' +
+        ", addressType=" + addressType +
+        ", addressList='" + addressList + '\'' +
+        ", accessToken='" + accessToken + '\'' +
+        ", updateTime=" + updateTime +
+        '}';
+  }
 
 }

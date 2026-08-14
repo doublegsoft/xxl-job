@@ -23,73 +23,73 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author xuxueli 2017-07-28 22:14:52
  */
 public class AdminBizTest {
-    private static final Logger logger = LoggerFactory.getLogger(AdminBizTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(AdminBizTest.class);
 
-    private static String addressUrl = "http://127.0.0.1:8080";
-    private static String accessToken = "default_token";
-    private static String appname = "xxl-job-executor-sample";
+  private static String addressUrl = "http://127.0.0.1:8080";
+  private static String accessToken = "default_token";
+  private static String appname = "xxl-job-executor-sample";
 
-    private AdminBiz buildClient(){
-        String finalUrl = addressUrl + "/api";
+  private AdminBiz buildClient() {
+    String finalUrl = addressUrl + "/api";
 
-        return HttpTool.createClient()
-                .url(finalUrl)
-                .timeout(3 * 1000)
-                .header(Const.XXL_JOB_ACCESS_TOKEN, accessToken)
-                .header(Const.XXL_JOB_APPNAME, appname)
-                .proxy(AdminBiz.class);
-    }
+    return HttpTool.createClient()
+        .url(finalUrl)
+        .timeout(3 * 1000)
+        .header(Const.XXL_JOB_ACCESS_TOKEN, accessToken)
+        .header(Const.XXL_JOB_APPNAME, appname)
+        .proxy(AdminBiz.class);
+  }
 
-    @Test
-    public void callback() throws Exception {
-        AdminBiz adminBiz = buildClient();
+  @Test
+  public void callback() throws Exception {
+    AdminBiz adminBiz = buildClient();
 
-        CallbackData param = new CallbackData();
-        param.setLogId(1);
-        param.setHandleCode(XxlJobContext.HANDLE_CODE_SUCCESS);
+    CallbackData param = new CallbackData();
+    param.setLogId(1);
+    param.setHandleCode(XxlJobContext.HANDLE_CODE_SUCCESS);
 
-        CallbackRequest callbackParam = new CallbackRequest(List.of(param));
+    CallbackRequest callbackParam = new CallbackRequest(List.of(param));
 
-        Response<String> returnT = adminBiz.callback(callbackParam);
-        assertTrue(returnT.isSuccess());
-    }
+    Response<String> returnT = adminBiz.callback(callbackParam);
+    assertTrue(returnT.isSuccess());
+  }
 
-    /**
-     * registry executor
-     *
-     * @throws Exception
-     */
-    @Test
-    public void registry() throws Exception {
-        AdminBiz adminBiz = buildClient();
+  /**
+   * registry executor
+   *
+   * @throws Exception
+   */
+  @Test
+  public void registry() throws Exception {
+    AdminBiz adminBiz = buildClient();
 
-        RegistryRequest registryParam = new RegistryRequest(RegistTypeEnum.EXECUTOR.name(), "xxl-job-executor-sample", "127.0.0.1:9999");
+    RegistryRequest registryParam = new RegistryRequest(RegistTypeEnum.EXECUTOR.name(), "xxl-job-executor-sample", "127.0.0.1:9999");
 
-        Response<String> returnT = adminBiz.registry(registryParam);
-        assertTrue(returnT.isSuccess());
-    }
+    Response<String> returnT = adminBiz.registry(registryParam);
+    assertTrue(returnT.isSuccess());
+  }
 
-    /**
-     * registry executor remove
-     *
-     * @throws Exception
-     */
-    @Test
-    public void registryRemove() throws Exception {
-        AdminBiz adminBiz = buildClient();
+  /**
+   * registry executor remove
+   *
+   * @throws Exception
+   */
+  @Test
+  public void registryRemove() throws Exception {
+    AdminBiz adminBiz = buildClient();
 
-        RegistryRequest registryParam = new RegistryRequest(RegistTypeEnum.EXECUTOR.name(), "xxl-job-executor-sample", "127.0.0.1:9999");
+    RegistryRequest registryParam = new RegistryRequest(RegistTypeEnum.EXECUTOR.name(), "xxl-job-executor-sample", "127.0.0.1:9999");
 
-        Response<String> returnT = adminBiz.registryRemove(registryParam);
-        assertTrue(returnT.isSuccess());
+    Response<String> returnT = adminBiz.registryRemove(registryParam);
+    assertTrue(returnT.isSuccess());
 
-    }
+  }
 
-    // ---------------------- job opt ----------------------
+  // ---------------------- job opt ----------------------
 
-    @Test
-    public void jobManage() throws Exception {
-        // jobAdd、jobUpdate、jobRemove、jobStart、jobStop
-    }
+  @Test
+  public void jobManage() throws Exception {
+    // jobAdd、jobUpdate、jobRemove、jobStart、jobStop
+  }
 
 }

@@ -22,44 +22,44 @@ import java.io.IOException;
  */
 @Component
 public class WebHandlerExceptionResolver implements HandlerExceptionResolver {
-	private static transient Logger logger = LoggerFactory.getLogger(WebHandlerExceptionResolver.class);
+  private static transient Logger logger = LoggerFactory.getLogger(WebHandlerExceptionResolver.class);
 
-	@Override
-	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+  @Override
+  public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
 
-		if (!(ex instanceof XxlJobException)) {
-			logger.error("WebExceptionResolver:{}", ex);
-		}
+    if (!(ex instanceof XxlJobException)) {
+      logger.error("WebExceptionResolver:{}", ex);
+    }
 
-		// parse isJson
-		boolean isJson = false;
-		if (handler instanceof HandlerMethod) {
-			HandlerMethod method = (HandlerMethod)handler;
-			isJson = method.getMethodAnnotation(ResponseBody.class)!=null;
-		}
+    // parse isJson
+    boolean isJson = false;
+    if (handler instanceof HandlerMethod) {
+      HandlerMethod method = (HandlerMethod) handler;
+      isJson = method.getMethodAnnotation(ResponseBody.class) != null;
+    }
 
-		// process error
-		ModelAndView mv = new ModelAndView();
-		if (isJson) {
-			try {
-				// errorMsg
-				String errorMsg = GsonTool.toJson(Response.ofFail(ex.toString()));
+    // process error
+    ModelAndView mv = new ModelAndView();
+    if (isJson) {
+      try {
+        // errorMsg
+        String errorMsg = GsonTool.toJson(Response.ofFail(ex.toString()));
 
-				// write response
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().println(errorMsg);
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			}
-			return mv;
-		} else {
+        // write response
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().println(errorMsg);
+      } catch (IOException e) {
+        logger.error(e.getMessage(), e);
+      }
+      return mv;
+    } else {
 
-			mv.addObject("exceptionMsg", ex.toString());
-			mv.setViewName("framework/common/common.errorpage");
-			return mv;
-		}
+      mv.addObject("exceptionMsg", ex.toString());
+      mv.setViewName("framework/common/common.errorpage");
+      return mv;
+    }
 
-	}
-	
+  }
+
 }

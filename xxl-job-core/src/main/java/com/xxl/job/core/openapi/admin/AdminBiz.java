@@ -10,33 +10,33 @@ import com.xxl.tool.response.Response;
 public interface AdminBiz {
 
 
-    // ---------------------- callback ----------------------
+  // ---------------------- callback ----------------------
 
-    /**
-     * callback
-     *
-     * @param callbackRequest callback request
-     * @return response
-     */
-    public Response<String> callback(CallbackRequest callbackRequest);
+  /**
+   * callback
+   *
+   * @param callbackRequest callback request
+   * @return response
+   */
+  public Response<String> callback(CallbackRequest callbackRequest);
 
 
-    // ---------------------- registry ----------------------
+  // ---------------------- registry ----------------------
 
-    /**
-     * registry
-     *
-     * @param registryRequest registry request
-     * @return  response
-     */
-    public Response<String> registry(RegistryRequest registryRequest);
+  /**
+   * registry
+   *
+   * @param registryRequest registry request
+   * @return response
+   */
+  public Response<String> registry(RegistryRequest registryRequest);
 
-    /**
-     * registry remove
-     *
-     * @param registryRequest registry request
-     * @return  response
-     */
-    public Response<String> registryRemove(RegistryRequest registryRequest);
+  /**
+   * registry remove
+   *
+   * @param registryRequest registry request
+   * @return response
+   */
+  public Response<String> registryRemove(RegistryRequest registryRequest);
 
 }

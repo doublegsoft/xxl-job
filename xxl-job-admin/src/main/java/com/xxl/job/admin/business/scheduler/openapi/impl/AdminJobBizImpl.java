@@ -24,138 +24,138 @@ import java.util.List;
 @Service
 public class AdminJobBizImpl implements AdminJobBiz {
 
-    @Resource
-    private XxlJobService xxlJobService;
+  @Resource
+  private XxlJobService xxlJobService;
 
-    /**
-     * openapi login info
-     */
-    private final LoginInfo OPENAPI_LOGIN_INFO = new LoginInfo(
-            "0",
-            "openapi",
-            "OpenAPI",
-            null,
-            List.of(Consts.ADMIN_ROLE),
-            null,
-            -1L,
-            null);
+  /**
+   * openapi login info
+   */
+  private final LoginInfo OPENAPI_LOGIN_INFO = new LoginInfo(
+      "0",
+      "openapi",
+      "OpenAPI",
+      null,
+      List.of(Consts.ADMIN_ROLE),
+      null,
+      -1L,
+      null);
 
-    /**
-     * token bucket, for rate limiting
-     */
-    private final TokenBucket tokenBucket = TokenBucket.create(100, Duration.ofSeconds(30));
+  /**
+   * token bucket, for rate limiting
+   */
+  private final TokenBucket tokenBucket = TokenBucket.create(100, Duration.ofSeconds(30));
 
-    @Override
-    public Response<String> addJob(JobAddRequest request) {
+  @Override
+  public Response<String> addJob(JobAddRequest request) {
 
-        // rate limit
-        if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
-            return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
-        }
-
-        // convert JobAddRequest to XxlJobInfo
-        XxlJobInfo jobInfo = new XxlJobInfo();
-        jobInfo.setJobGroup(request.getJobGroup());
-        jobInfo.setName(request.getName());
-        jobInfo.setAuthor(request.getAuthor());
-        jobInfo.setAlarmEmail(request.getAlarmEmail());
-        jobInfo.setScheduleType(request.getScheduleType());
-        jobInfo.setScheduleConf(request.getScheduleConf());
-        jobInfo.setMisfireStrategy(request.getMisfireStrategy());
-        jobInfo.setExecutorRouteStrategy(request.getExecutorRouteStrategy());
-        jobInfo.setExecutorHandler(request.getExecutorHandler());
-        jobInfo.setExecutorParam(request.getExecutorParam());
-        jobInfo.setExecutorBlockStrategy(request.getExecutorBlockStrategy());
-        jobInfo.setExecutorTimeout(request.getExecutorTimeout());
-        jobInfo.setExecutorFailRetryCount(request.getExecutorFailRetryCount());
-        jobInfo.setGlueType(request.getGlueType());
-        jobInfo.setGlueSource(request.getGlueSource());
-        jobInfo.setGlueRemark(request.getGlueRemark());
-        jobInfo.setChildJobId(null);
-
-        // add job
-        return xxlJobService.add(jobInfo, OPENAPI_LOGIN_INFO);
+    // rate limit
+    if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
+      return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
     }
 
-    @Override
-    public Response<String> updateJob(JobUpdateRequest request) {
+    // convert JobAddRequest to XxlJobInfo
+    XxlJobInfo jobInfo = new XxlJobInfo();
+    jobInfo.setJobGroup(request.getJobGroup());
+    jobInfo.setName(request.getName());
+    jobInfo.setAuthor(request.getAuthor());
+    jobInfo.setAlarmEmail(request.getAlarmEmail());
+    jobInfo.setScheduleType(request.getScheduleType());
+    jobInfo.setScheduleConf(request.getScheduleConf());
+    jobInfo.setMisfireStrategy(request.getMisfireStrategy());
+    jobInfo.setExecutorRouteStrategy(request.getExecutorRouteStrategy());
+    jobInfo.setExecutorHandler(request.getExecutorHandler());
+    jobInfo.setExecutorParam(request.getExecutorParam());
+    jobInfo.setExecutorBlockStrategy(request.getExecutorBlockStrategy());
+    jobInfo.setExecutorTimeout(request.getExecutorTimeout());
+    jobInfo.setExecutorFailRetryCount(request.getExecutorFailRetryCount());
+    jobInfo.setGlueType(request.getGlueType());
+    jobInfo.setGlueSource(request.getGlueSource());
+    jobInfo.setGlueRemark(request.getGlueRemark());
+    jobInfo.setChildJobId(null);
 
-        // rate limit
-        if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
-            return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
-        }
+    // add job
+    return xxlJobService.add(jobInfo, OPENAPI_LOGIN_INFO);
+  }
 
-        // convert JobUpdateRequest to XxlJobInfo
-        XxlJobInfo jobInfo = new XxlJobInfo();
-        jobInfo.setId(request.getId());
-        jobInfo.setJobGroup(0);
-        jobInfo.setName(request.getName());
-        jobInfo.setAuthor(request.getAuthor());
-        jobInfo.setAlarmEmail(request.getAlarmEmail());
-        jobInfo.setScheduleType(request.getScheduleType());
-        jobInfo.setScheduleConf(request.getScheduleConf());
-        jobInfo.setMisfireStrategy(request.getMisfireStrategy());
-        jobInfo.setExecutorRouteStrategy(request.getExecutorRouteStrategy());
-        jobInfo.setExecutorHandler(request.getExecutorHandler());
-        jobInfo.setExecutorParam(request.getExecutorParam());
-        jobInfo.setExecutorBlockStrategy(request.getExecutorBlockStrategy());
-        jobInfo.setExecutorTimeout(request.getExecutorTimeout());
-        jobInfo.setExecutorFailRetryCount(request.getExecutorFailRetryCount());
-        jobInfo.setGlueType(request.getGlueType());
-        jobInfo.setGlueSource(request.getGlueSource());
-        jobInfo.setGlueRemark(request.getGlueRemark());
-        jobInfo.setChildJobId(null);
+  @Override
+  public Response<String> updateJob(JobUpdateRequest request) {
 
-        // update job
-        return xxlJobService.update(jobInfo, OPENAPI_LOGIN_INFO);
+    // rate limit
+    if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
+      return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
     }
 
-    @Override
-    public Response<String> removeJob(JobOperateRequest request) {
+    // convert JobUpdateRequest to XxlJobInfo
+    XxlJobInfo jobInfo = new XxlJobInfo();
+    jobInfo.setId(request.getId());
+    jobInfo.setJobGroup(0);
+    jobInfo.setName(request.getName());
+    jobInfo.setAuthor(request.getAuthor());
+    jobInfo.setAlarmEmail(request.getAlarmEmail());
+    jobInfo.setScheduleType(request.getScheduleType());
+    jobInfo.setScheduleConf(request.getScheduleConf());
+    jobInfo.setMisfireStrategy(request.getMisfireStrategy());
+    jobInfo.setExecutorRouteStrategy(request.getExecutorRouteStrategy());
+    jobInfo.setExecutorHandler(request.getExecutorHandler());
+    jobInfo.setExecutorParam(request.getExecutorParam());
+    jobInfo.setExecutorBlockStrategy(request.getExecutorBlockStrategy());
+    jobInfo.setExecutorTimeout(request.getExecutorTimeout());
+    jobInfo.setExecutorFailRetryCount(request.getExecutorFailRetryCount());
+    jobInfo.setGlueType(request.getGlueType());
+    jobInfo.setGlueSource(request.getGlueSource());
+    jobInfo.setGlueRemark(request.getGlueRemark());
+    jobInfo.setChildJobId(null);
 
-        // rate limit
-        if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
-            return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
-        }
+    // update job
+    return xxlJobService.update(jobInfo, OPENAPI_LOGIN_INFO);
+  }
 
-        return xxlJobService.remove(request.getId(), OPENAPI_LOGIN_INFO);
+  @Override
+  public Response<String> removeJob(JobOperateRequest request) {
+
+    // rate limit
+    if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
+      return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
     }
 
-    @Override
-    public Response<String> startJob(JobOperateRequest request) {
+    return xxlJobService.remove(request.getId(), OPENAPI_LOGIN_INFO);
+  }
 
-        // rate limit
-        if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
-            return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
-        }
+  @Override
+  public Response<String> startJob(JobOperateRequest request) {
 
-        return xxlJobService.start(request.getId(), OPENAPI_LOGIN_INFO);
+    // rate limit
+    if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
+      return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
     }
 
-    @Override
-    public Response<String> stopJob(JobOperateRequest request) {
+    return xxlJobService.start(request.getId(), OPENAPI_LOGIN_INFO);
+  }
 
-        // rate limit
-        if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
-            return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
-        }
+  @Override
+  public Response<String> stopJob(JobOperateRequest request) {
 
-        return xxlJobService.stop(request.getId(), OPENAPI_LOGIN_INFO);
+    // rate limit
+    if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
+      return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
     }
 
-    @Override
-    public Response<String> triggerJob(JobTriggerRequest request) {
+    return xxlJobService.stop(request.getId(), OPENAPI_LOGIN_INFO);
+  }
 
-        // rate limit
-        if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
-            return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
-        }
+  @Override
+  public Response<String> triggerJob(JobTriggerRequest request) {
 
-        return xxlJobService.trigger(
-                OPENAPI_LOGIN_INFO,
-                request.getId(),
-                request.getExecutorParam(),
-                request.getAddressList());
+    // rate limit
+    if (!tokenBucket.tryAcquire(1, Duration.ofMillis(1000L))) {
+      return Response.of(ResponseCode.CODE_502.getCode(), "Too many requests, please try again later.");
     }
+
+    return xxlJobService.trigger(
+        OPENAPI_LOGIN_INFO,
+        request.getId(),
+        request.getExecutorParam(),
+        request.getAddressList());
+  }
 
 }

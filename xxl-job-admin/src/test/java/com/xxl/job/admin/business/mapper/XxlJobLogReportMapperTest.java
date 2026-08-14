@@ -12,24 +12,24 @@ import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class XxlJobLogReportMapperTest {
-    private static final Logger logger = LoggerFactory.getLogger(XxlJobLogMapperTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(XxlJobLogMapperTest.class);
 
-    @Resource
-    private XxlJobLogReportMapper xxlJobLogReportMapper;
+  @Resource
+  private XxlJobLogReportMapper xxlJobLogReportMapper;
 
-    @Test
-    public void test(){
+  @Test
+  public void test() {
 
-        Date date = DateTool.parseDate("2025-10-01");
+    Date date = DateTool.parseDate("2025-10-01");
 
-        XxlJobLogReport xxlJobLogReport = new XxlJobLogReport();
-        xxlJobLogReport.setTriggerDay(date);
-        xxlJobLogReport.setRunningCount(444);
-        xxlJobLogReport.setSucCount(555);
-        xxlJobLogReport.setFailCount(666);
-        xxlJobLogReport.setUpdateTime(new Date());
+    XxlJobLogReport xxlJobLogReport = new XxlJobLogReport();
+    xxlJobLogReport.setTriggerDay(date);
+    xxlJobLogReport.setRunningCount(444);
+    xxlJobLogReport.setSucCount(555);
+    xxlJobLogReport.setFailCount(666);
+    xxlJobLogReport.setUpdateTime(new Date());
 
-        int ret = xxlJobLogReportMapper.saveOrUpdate(xxlJobLogReport);
-        logger.info("ret:{}", ret);
-    }
+    int ret = xxlJobLogReportMapper.saveOrUpdate(xxlJobLogReport);
+    logger.info("ret:{}", ret);
+  }
 }

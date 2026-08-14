@@ -5,14 +5,14 @@ package com.xxl.job.core.constant;
  */
 public enum RegistTypeEnum {
 
-    /**
-     * executor registry
-     */
-    EXECUTOR,
+  /**
+   * executor registry
+   */
+  EXECUTOR,
 
-    /**
-     * admin registry
-     */
-    ADMIN;
+  /**
+   * admin registry
+   */
+  ADMIN;
 
 }

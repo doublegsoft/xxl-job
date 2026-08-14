@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebErrorPageRegistrar implements ErrorPageRegistrar {
 
-    @Override
-    public void registerErrorPages(ErrorPageRegistry registry) {
-        ErrorPage errorPage = new ErrorPage("/errorpage");
-        registry.addErrorPages(errorPage);
-    }
+  @Override
+  public void registerErrorPages(ErrorPageRegistry registry) {
+    ErrorPage errorPage = new ErrorPage("/errorpage");
+    registry.addErrorPages(errorPage);
+  }
 }

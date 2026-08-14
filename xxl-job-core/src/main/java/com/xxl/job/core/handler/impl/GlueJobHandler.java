@@ -10,38 +10,38 @@ import com.xxl.job.core.handler.IJobHandler;
  */
 public class GlueJobHandler extends IJobHandler {
 
-	/**
-	 * glue update time
-	 */
-	private long glueUpdatetime;
+  /**
+   * glue update time
+   */
+  private long glueUpdatetime;
 
-	/**
-	 * job handler
-	 */
-	private IJobHandler jobHandler;
+  /**
+   * job handler
+   */
+  private IJobHandler jobHandler;
 
-	public GlueJobHandler(IJobHandler jobHandler, long glueUpdatetime) {
-		this.jobHandler = jobHandler;
-		this.glueUpdatetime = glueUpdatetime;
-	}
+  public GlueJobHandler(IJobHandler jobHandler, long glueUpdatetime) {
+    this.jobHandler = jobHandler;
+    this.glueUpdatetime = glueUpdatetime;
+  }
 
-	public long getGlueUpdatetime() {
-		return glueUpdatetime;
-	}
+  public long getGlueUpdatetime() {
+    return glueUpdatetime;
+  }
 
-	@Override
-	public void execute() throws Exception {
-		XxlJobHelper.log("----------- glue.version:"+ glueUpdatetime +" -----------");
-		this.jobHandler.execute();
-	}
+  @Override
+  public void execute() throws Exception {
+    XxlJobHelper.log("----------- glue.version:" + glueUpdatetime + " -----------");
+    this.jobHandler.execute();
+  }
 
-	@Override
-	public void init() throws Exception {
-		this.jobHandler.init();
-	}
+  @Override
+  public void init() throws Exception {
+    this.jobHandler.init();
+  }
 
-	@Override
-	public void destroy() throws Exception {
-		this.jobHandler.destroy();
-	}
+  @Override
+  public void destroy() throws Exception {
+    this.jobHandler.destroy();
+  }
 }

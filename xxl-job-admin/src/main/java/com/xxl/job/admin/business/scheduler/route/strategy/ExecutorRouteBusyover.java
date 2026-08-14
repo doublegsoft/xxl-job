@@ -16,36 +16,36 @@ import java.util.List;
  */
 public class ExecutorRouteBusyover extends ExecutorRouter {
 
-    @Override
-    public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
-        List<String> addressList = jobGroup.getRegistryList();
+  @Override
+  public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
+    List<String> addressList = jobGroup.getRegistryList();
 
-        StringBuffer idleBeatResultSB = new StringBuffer();
-        for (String address : addressList) {
-            // beat
-            Response<String> idleBeatResult = null;
-            try {
-                ExecutorBiz executorBiz = XxlJobAdminBootstrap.getExecutorBiz(address, jobGroup);
-                idleBeatResult = executorBiz.idleBeat(new IdleBeatRequest(triggerParam.getJobId()));
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                idleBeatResult = Response.ofFail( ""+e );
-            }
-            idleBeatResultSB.append( (idleBeatResultSB.length()>0)?"<br><br>":"")
-                    .append(I18nUtil.getString("jobconf_idleBeat") + "：")
-                    .append("<br>address：").append(address)
-                    .append("<br>code：").append(idleBeatResult.getCode())
-                    .append("<br>msg：").append(idleBeatResult.getMsg());
+    StringBuffer idleBeatResultSB = new StringBuffer();
+    for (String address : addressList) {
+      // beat
+      Response<String> idleBeatResult = null;
+      try {
+        ExecutorBiz executorBiz = XxlJobAdminBootstrap.getExecutorBiz(address, jobGroup);
+        idleBeatResult = executorBiz.idleBeat(new IdleBeatRequest(triggerParam.getJobId()));
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        idleBeatResult = Response.ofFail("" + e);
+      }
+      idleBeatResultSB.append((idleBeatResultSB.length() > 0) ? "<br><br>" : "")
+          .append(I18nUtil.getString("jobconf_idleBeat") + "：")
+          .append("<br>address：").append(address)
+          .append("<br>code：").append(idleBeatResult.getCode())
+          .append("<br>msg：").append(idleBeatResult.getMsg());
 
-            // beat success
-            if (idleBeatResult.isSuccess()) {
-                idleBeatResult.setMsg(idleBeatResultSB.toString());
-                idleBeatResult.setData(address);
-                return idleBeatResult;
-            }
-        }
-
-        return Response.ofFail( idleBeatResultSB.toString());
+      // beat success
+      if (idleBeatResult.isSuccess()) {
+        idleBeatResult.setMsg(idleBeatResultSB.toString());
+        idleBeatResult.setData(address);
+        return idleBeatResult;
+      }
     }
+
+    return Response.ofFail(idleBeatResultSB.toString());
+  }
 
 }

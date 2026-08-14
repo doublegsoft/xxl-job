@@ -36,170 +36,170 @@ import java.util.function.Consumer;
 @Controller
 @EnableAutoConfiguration
 public class IndexController {
-    private static Logger logger = LoggerFactory.getLogger(IndexController.class);
+  private static Logger logger = LoggerFactory.getLogger(IndexController.class);
 
 
-    @RequestMapping("/")
-    @ResponseBody
-    String index() {
-        return "xxl job ai executor running.";
+  @RequestMapping("/")
+  @ResponseBody
+  String index() {
+    return "xxl job ai executor running.";
+  }
+
+
+  // --------------------------------- ollama chat ---------------------------------
+
+  @Resource
+  private OllamaChatModel ollamaChatModel;
+  private String prompt = "你好，你是一个研发工程师，擅长解决技术类问题。";
+  private String modle = "qwen3.5:0.8b";
+
+  /**
+   * ChatClient 简单调用
+   */
+  @GetMapping("/chat/simple")
+  @ResponseBody
+  public String simpleChat(@RequestParam(value = "input", required = false, defaultValue = "介绍你自己") String input) {
+
+    // build chat-client
+    ChatClient ollamaChatClient = ChatClient
+        .builder(ollamaChatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())       // add memory
+        .defaultAdvisors(SimpleLoggerAdvisor.builder().build())                                                     // add logger
+        .defaultOptions(OllamaChatOptions.builder().model(modle))                                                   // assign model
+        .build();
+
+    // call ollama
+    String response = ollamaChatClient
+        .prompt(prompt)
+        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
+        .user(input)
+        .call()
+        .content();
+
+    logger.info("result: " + response);
+    return response;
+  }
+
+  /**
+   * ChatClient 流式调用
+   */
+  @GetMapping("/chat/stream")
+  public Flux<String> streamChat(HttpServletResponse response, @RequestParam(value = "input", required = false, defaultValue = "介绍你自己") String input) {
+    response.setCharacterEncoding("UTF-8");
+
+    // build chat-client
+    ChatClient ollamaChatClient = ChatClient
+        .builder(ollamaChatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
+        .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
+        .defaultOptions(OllamaChatOptions.builder().model(modle))
+        .build();
+
+    // call ollama
+    return ollamaChatClient
+        .prompt(prompt)
+        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
+        .user(input)
+        .stream()
+        .content();
+  }
+
+
+  // --------------------------------- dify workflow ---------------------------------
+
+  // dify config sample
+  private final String apiKey = "app-46gHBiqUb5jqAHl9TDWwnRZ8";
+  private final String baseUrl = "http://localhost/v1";
+
+  @GetMapping("/dify/simple")
+  @ResponseBody
+  public String difySimple(@RequestParam(required = false, value = "input") String input) throws Exception {
+
+    Map<String, Object> inputs = new HashMap<>();
+    inputs.put("input", input);
+
+    // request
+    WorkflowRunRequest request = WorkflowRunRequest.builder()
+        .inputs(inputs)
+        .responseMode(ResponseMode.BLOCKING)
+        .user("user-123")
+        .build();
+
+    // invoke
+    DifyWorkflowClient workflowClient = DifyClientFactory.createWorkflowClient(baseUrl, apiKey);
+    WorkflowRunResponse response = workflowClient.runWorkflow(request);
+
+    // response
+    return write2Json(response.getData().getOutputs());
+  }
+
+  private String write2Json(Object obj) {
+    if (obj == null) {
+      return "null";
     }
-
-
-    // --------------------------------- ollama chat ---------------------------------
-
-    @Resource
-    private OllamaChatModel ollamaChatModel;
-    private String prompt = "你好，你是一个研发工程师，擅长解决技术类问题。";
-    private String modle = "qwen3.5:0.8b";
-
-    /**
-     * ChatClient 简单调用
-     */
-    @GetMapping("/chat/simple")
-    @ResponseBody
-    public String simpleChat(@RequestParam(value = "input", required = false, defaultValue = "介绍你自己") String input) {
-
-        // build chat-client
-        ChatClient ollamaChatClient = ChatClient
-                .builder(ollamaChatModel)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())       // add memory
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())                                                     // add logger
-                .defaultOptions(OllamaChatOptions.builder().model(modle))                                                   // assign model
-                .build();
-
-        // call ollama
-        String response = ollamaChatClient
-                .prompt(prompt)
-                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
-                .user(input)
-                .call()
-                .content();
-
-        logger.info("result: " + response);
-        return response;
+    try {
+      return new ObjectMapper().writeValueAsString(obj);
+    } catch (JsonProcessingException e) {
+      return obj.toString();
     }
+  }
 
-    /**
-     * ChatClient 流式调用
-     */
-    @GetMapping("/chat/stream")
-    public Flux<String> streamChat(HttpServletResponse response, @RequestParam(value = "input", required = false, defaultValue = "介绍你自己") String input) {
-        response.setCharacterEncoding("UTF-8");
+  @GetMapping("/dify/stream")
+  public Flux<String> difyStream(@RequestParam(required = false, value = "input") String input) {
 
-        // build chat-client
-        ChatClient ollamaChatClient = ChatClient
-                .builder(ollamaChatModel)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
-                .defaultOptions(OllamaChatOptions.builder().model(modle))
-                .build();
+    Map<String, Object> inputs = new HashMap<>();
+    inputs.put("input", input);
 
-        // call ollama
-        return ollamaChatClient
-                .prompt(prompt)
-                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "conversationId-default"))
-                .user(input)
-                .stream()
-                .content();
-    }
+    // request
+    WorkflowRunRequest request = WorkflowRunRequest.builder()
+        .inputs(inputs)
+        .responseMode(ResponseMode.STREAMING)
+        .user("user-123")
+        .build();
 
-
-    // --------------------------------- dify workflow ---------------------------------
-
-    // dify config sample
-    private final String apiKey = "app-46gHBiqUb5jqAHl9TDWwnRZ8";
-    private final String baseUrl = "http://localhost/v1";
-
-    @GetMapping("/dify/simple")
-    @ResponseBody
-    public String difySimple(@RequestParam(required = false, value = "input") String input) throws Exception {
-
-        Map<String, Object> inputs = new HashMap<>();
-        inputs.put("input", input);
-
-        // request
-        WorkflowRunRequest request = WorkflowRunRequest.builder()
-                .inputs(inputs)
-                .responseMode(ResponseMode.BLOCKING)
-                .user("user-123")
-                .build();
-
-        // invoke
-        DifyWorkflowClient workflowClient = DifyClientFactory.createWorkflowClient(baseUrl, apiKey);
-        WorkflowRunResponse response = workflowClient.runWorkflow(request);
-
-        // response
-        return write2Json(response.getData().getOutputs());
-    }
-
-    private String write2Json(Object obj) {
-        if (obj == null) {
-            return "null";
-        }
+    // invoke
+    DifyWorkflowClient workflowClient = DifyClientFactory.createWorkflowClient(baseUrl, apiKey);
+    return Flux.create(new Consumer<FluxSink<String>>() {
+      @Override
+      public void accept(FluxSink<String> sink) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            return obj.toString();
-        }
-    }
-
-    @GetMapping( "/dify/stream")
-    public Flux<String> difyStream(@RequestParam(required = false, value = "input") String input) {
-
-        Map<String, Object> inputs = new HashMap<>();
-        inputs.put("input", input);
-
-        // request
-        WorkflowRunRequest request = WorkflowRunRequest.builder()
-                .inputs(inputs)
-                .responseMode(ResponseMode.STREAMING)
-                .user("user-123")
-                .build();
-
-        // invoke
-        DifyWorkflowClient workflowClient = DifyClientFactory.createWorkflowClient(baseUrl, apiKey);
-        return Flux.create(new Consumer<FluxSink<String>>() {
+          workflowClient.runWorkflowStream(request, new WorkflowStreamCallback() {
             @Override
-            public void accept(FluxSink<String> sink) {
-                try {
-                    workflowClient.runWorkflowStream(request, new WorkflowStreamCallback() {
-                        @Override
-                        public void onWorkflowStarted(WorkflowStartedEvent event) {
-                            sink.next("工作流开始: " + write2Json(event.getData()));
-                        }
-
-                        @Override
-                        public void onNodeStarted(NodeStartedEvent event) {
-                            sink.next("节点开始: " + write2Json(event.getData()));
-                        }
-
-                        @Override
-                        public void onNodeFinished(NodeFinishedEvent event) {
-                            sink.next("节点完成: " + write2Json(event.getData().getOutputs()));
-                        }
-
-                        @Override
-                        public void onWorkflowFinished(WorkflowFinishedEvent event) {
-                            sink.next("工作流完成: " + write2Json(event.getData().getOutputs()));
-                            sink.complete();
-                        }
-
-                        @Override
-                        public void onError(ErrorEvent event) {
-                            sink.error(new RuntimeException(event.getMessage()));
-                        }
-
-                        @Override
-                        public void onException(Throwable throwable) {
-                            sink.error(throwable);
-                        }
-                    });
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            public void onWorkflowStarted(WorkflowStartedEvent event) {
+              sink.next("工作流开始: " + write2Json(event.getData()));
             }
-        });
-    }
+
+            @Override
+            public void onNodeStarted(NodeStartedEvent event) {
+              sink.next("节点开始: " + write2Json(event.getData()));
+            }
+
+            @Override
+            public void onNodeFinished(NodeFinishedEvent event) {
+              sink.next("节点完成: " + write2Json(event.getData().getOutputs()));
+            }
+
+            @Override
+            public void onWorkflowFinished(WorkflowFinishedEvent event) {
+              sink.next("工作流完成: " + write2Json(event.getData().getOutputs()));
+              sink.complete();
+            }
+
+            @Override
+            public void onError(ErrorEvent event) {
+              sink.error(new RuntimeException(event.getMessage()));
+            }
+
+            @Override
+            public void onException(Throwable throwable) {
+              sink.error(throwable);
+            }
+          });
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+  }
 
 }

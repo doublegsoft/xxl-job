@@ -13,13 +13,13 @@ import java.util.Random;
  */
 public class ExecutorRouteRandom extends ExecutorRouter {
 
-    private static Random localRandom = new Random();
+  private static Random localRandom = new Random();
 
-    @Override
-    public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
-        List<String> addressList = jobGroup.getRegistryList();
-        String address = addressList.get(localRandom.nextInt(addressList.size()));
-        return Response.ofSuccess(address);
-    }
+  @Override
+  public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
+    List<String> addressList = jobGroup.getRegistryList();
+    String address = addressList.get(localRandom.nextInt(addressList.size()));
+    return Response.ofSuccess(address);
+  }
 
 }

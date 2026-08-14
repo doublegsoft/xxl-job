@@ -15,37 +15,37 @@ import java.util.List;
  */
 public class ExecutorRouteFailover extends ExecutorRouter {
 
-    @Override
-    public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
+  @Override
+  public Response<String> route(TriggerRequest triggerParam, XxlJobGroup jobGroup) {
 
-        List<String> addressList = jobGroup.getRegistryList();
+    List<String> addressList = jobGroup.getRegistryList();
 
-        StringBuffer beatResultSB = new StringBuffer();
-        for (String address : addressList) {
-            // beat
-            Response<String> beatResult = null;
-            try {
-                ExecutorBiz executorBiz = XxlJobAdminBootstrap.getExecutorBiz(address, jobGroup);
-                beatResult = executorBiz.beat();
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                beatResult = Response.ofFail(e.getMessage() );
-            }
-            beatResultSB.append( (beatResultSB.length()>0)?"<br><br>":"")
-                    .append(I18nUtil.getString("jobconf_beat") + "：")
-                    .append("<br>address：").append(address)
-                    .append("<br>code：").append(beatResult.getCode())
-                    .append("<br>msg：").append(beatResult.getMsg());
+    StringBuffer beatResultSB = new StringBuffer();
+    for (String address : addressList) {
+      // beat
+      Response<String> beatResult = null;
+      try {
+        ExecutorBiz executorBiz = XxlJobAdminBootstrap.getExecutorBiz(address, jobGroup);
+        beatResult = executorBiz.beat();
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        beatResult = Response.ofFail(e.getMessage());
+      }
+      beatResultSB.append((beatResultSB.length() > 0) ? "<br><br>" : "")
+          .append(I18nUtil.getString("jobconf_beat") + "：")
+          .append("<br>address：").append(address)
+          .append("<br>code：").append(beatResult.getCode())
+          .append("<br>msg：").append(beatResult.getMsg());
 
-            // beat success
-            if (beatResult.isSuccess()) {
+      // beat success
+      if (beatResult.isSuccess()) {
 
-                beatResult.setMsg(beatResultSB.toString());
-                beatResult.setData(address);
-                return beatResult;
-            }
-        }
-        return Response.ofFail( beatResultSB.toString());
-
+        beatResult.setMsg(beatResultSB.toString());
+        beatResult.setData(address);
+        return beatResult;
+      }
     }
+    return Response.ofFail(beatResultSB.toString());
+
+  }
 }

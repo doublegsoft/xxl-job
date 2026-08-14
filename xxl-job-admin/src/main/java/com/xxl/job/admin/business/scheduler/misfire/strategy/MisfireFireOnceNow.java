@@ -7,13 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MisfireFireOnceNow extends MisfireHandler {
-    protected static Logger logger = LoggerFactory.getLogger(MisfireFireOnceNow.class);
+  protected static Logger logger = LoggerFactory.getLogger(MisfireFireOnceNow.class);
 
-    @Override
-    public void handle(int jobId) {
-        // FIRE_ONCE_NOW 》 trigger
-        XxlJobAdminBootstrap.getInstance().getJobTriggerPoolHelper().trigger(jobId, TriggerTypeEnum.MISFIRE, -1, null, null, null);
-        logger.warn(">>>>>>>>>>> xxl-job, schedule MisfireFireOnceNow: jobId = " + jobId );
-    }
+  @Override
+  public void handle(int jobId) {
+    // FIRE_ONCE_NOW 》 trigger
+    XxlJobAdminBootstrap.getInstance().getJobTriggerPoolHelper().trigger(jobId, TriggerTypeEnum.MISFIRE, -1, null, null, null);
+    logger.warn(">>>>>>>>>>> xxl-job, schedule MisfireFireOnceNow: jobId = " + jobId);
+  }
 
 }

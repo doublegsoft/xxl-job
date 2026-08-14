@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 
 @Testable
 public class FramelessApplicationTest {
-    private static final Logger logger = LoggerFactory.getLogger(FramelessApplicationTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(FramelessApplicationTest.class);
 
-    @Test
-    @DisplayName("test1")
-    public void test1(){
-        logger.info("111");
-        Assertions.assertNull( null);
-    }
+  @Test
+  @DisplayName("test1")
+  public void test1() {
+    logger.info("111");
+    Assertions.assertNull(null);
+  }
 
 }
